@@ -1,13 +1,51 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.signup-form,
+.signin-form {
+  box-shadow: 0 0 16px -5px rgba(0, 0, 0, 0.6); }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
+.signin-form__control:nth-child(2) {
+  margin-bottom: 0; }
+
+.property {
+  border-radius: 5px;
+  box-shadow: 0 0 20px -5px rgba(0, 0, 0, 0.6); }
+  .property__thumbnail {
+    border-radius: 5px 5px 0 0;
+    touch-action: none; }
+  .property__share__fallback {
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.25);
+    background: rgba(255, 255, 255, 0.8); }
+
+.controls__search__input {
+  border: 0.2rem solid;
+  border-right: none;
+  border-radius: 2rem 0 0 2rem; }
+  border-r-0 rounded-r-none border-2 .controls__search__input:focus {
+    border-color: black; }
+
+.controls__search__icon {
+  border: 0.2rem solid;
+  border-radius: 0 2rem 2rem 0;
+  border-left: none; }
+
+.filter__box {
+  position: fixed;
+  overflow-y: scroll;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100vw;
+  height: 0;
+  transition: 1s; }
+  .filter__box--open {
+    height: 100vh; }
+
+.account__info__avatar__img {
+  display: block;
+  border: 5px solid #15d17d;
+  border-radius: 100%; }
+
+.carousel__slider > * {
+  flex: 0 0 auto; }
