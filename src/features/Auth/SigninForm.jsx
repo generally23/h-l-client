@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Button from './Button';
+import Button from '../../customComponents/Button';
 import {
   isValidEmail,
   isValidPassword,
@@ -9,10 +9,10 @@ import { signin } from './accountsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { setLocalAuth } from '../../utils';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { alertAndRedirectBack } from '../../utils';
+
 import PasswordVisibility from './PasswordVisibility';
+import { authenticate } from './appAuthSlice';
 
 const SigninForm = ({ setSuccessMessage, setErrorMessage }) => {
   // event handlers
@@ -60,7 +60,7 @@ const SigninForm = ({ setSuccessMessage, setErrorMessage }) => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  const [passwordType, setPasswordType] = useState('password');
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   // hooks
   const dispatch = useDispatch();
@@ -77,8 +77,8 @@ const SigninForm = ({ setSuccessMessage, setErrorMessage }) => {
       setErrorMessage('');
       // redirect user after 2 seconds
       setTimeout(() => {
-        // set authentication status to true
-        setLocalAuth({ authenticated: true, account });
+        // re-authenticate after showing message
+        dispatch(authenticate());
         // redirect
         redirect(-1);
       }, 5000);
@@ -90,22 +90,12 @@ const SigninForm = ({ setSuccessMessage, setErrorMessage }) => {
       // show error message
       setErrorMessage(error.message);
     }
-  }, [account, error]);
+  }, [account, error, loading]);
+
+  // useEffect(() => {});
 
   return (
-    <form
-      className='
-          signin-form absolute
-          top-1/2 left-1/2 
-          transform 
-          -translate-x-1/2 
-          -translate-y-1/2 
-          p-10
-          w-4/5
-          rounded-lg
-      '
-      onSubmit={handleSubmit}
-    >
+    <form className='signin-form' onSubmit={handleSubmit}>
       {/* Email */}
       <div className='signin-form__email'>
         <label htmlFor='email' className='signin-form__label block mb-2'>
@@ -139,7 +129,7 @@ const SigninForm = ({ setSuccessMessage, setErrorMessage }) => {
       </div>
 
       {/* Password */}
-      <div className='signin-form__password mb-2'>
+      <div className='signin-form__password mb-3'>
         <label htmlFor='password' className='signin-form__label block mb-2'>
           Password: *
         </label>
@@ -156,18 +146,25 @@ const SigninForm = ({ setSuccessMessage, setErrorMessage }) => {
               mb-2
           '
             id='password'
-            type={passwordType}
+            type={passwordVisible ? 'text' : 'password'}
             value={password}
             onChange={onPasswordChange}
           />
-          <PasswordVisibility {...{ passwordType, setPasswordType }} />
+          <PasswordVisibility {...{ passwordVisible, setPasswordVisible }} />
         </div>
 
         <p className='signin-form__errormsg text-red-800'>{passwordError}</p>
       </div>
       {/* Controls */}
-      <div className='signin-form__controls'>
-        <Button type='signin'>Sign In</Button>
+      <div className='signin-form__controls ite'>
+        <Button type='signin' classNames='flex items-center justify-center'>
+          <span className='mr-2'>Sign In</span>
+          {loading && (
+            <span>
+              <CircularProgress size={25} />
+            </span>
+          )}
+        </Button>
       </div>
 
       {/* {loading && (

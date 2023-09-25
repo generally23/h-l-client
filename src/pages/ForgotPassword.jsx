@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import ForgotPasswordForm from '../features/Auth/ForgotPasswordForm';
-import SuccessAlert from './SuccessAlert';
-import ErrorAlert from './ErrorAlert';
-import { getLocalAuth } from '../utils';
+import SuccessAlert from '../customComponents/SuccessAlert';
+import ErrorAlert from '../customComponents/ErrorAlert';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 function ForgotPassword() {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const { authenticated } = getLocalAuth() || false;
+  const { account } = useSelector(state => state.authentication);
 
   const redirect = useNavigate();
 
   useEffect(() => {
-    if (authenticated) redirect('/');
+    if (account) redirect('/');
   });
   return (
     <>

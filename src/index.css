@@ -2,8 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 .signup-form,
-.signin-form {
-  box-shadow: 0 0 16px -5px rgba(0, 0, 0, 0.6); }
+.signin-form,
+.change-password-form,
+.forgot-password-form,
+.reset-password-form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 2rem;
+  width: 90%;
+  border-radius: 8px;
+  background: #eee;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.4); }
 
 .signin-form__control:nth-child(2) {
   margin-bottom: 0; }
@@ -12,25 +23,24 @@
   border-radius: 5px;
   box-shadow: 0 0 20px -5px rgba(0, 0, 0, 0.6); }
   .property__thumbnail {
-    border-radius: 5px 5px 0 0;
-    touch-action: none; }
+    border-radius: 5px 5px 0 0; }
   .property__share__fallback {
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.25);
     background: rgba(255, 255, 255, 0.8); }
 
 .controls__search__input {
-  border: 0.2rem solid;
+  border: 0.15rem solid;
   border-right: none;
   border-radius: 2rem 0 0 2rem; }
   border-r-0 rounded-r-none border-2 .controls__search__input:focus {
     border-color: black; }
 
 .controls__search__icon {
-  border: 0.2rem solid;
+  border: 0.15rem solid;
   border-radius: 0 2rem 2rem 0;
-  border-left: none; }
+  border-left: 0.15rem solid; }
 
-.filter__box {
+.controls__filter__box {
   position: fixed;
   overflow-y: scroll;
   top: 0;
@@ -39,13 +49,22 @@
   width: 100vw;
   height: 0;
   transition: 1s; }
-  .filter__box--open {
+  .controls__filter__box--open {
     height: 100vh; }
+
+.controls__paginate {
+  flex: 0 0 100%; }
 
 .account__info__avatar__img {
   display: block;
-  border: 5px solid #15d17d;
+  border: 5px solid #087ec3;
   border-radius: 100%; }
 
 .carousel__slider > * {
   flex: 0 0 auto; }
+
+.links {
+  background: red;
+  padding: 20px;
+  display: grid;
+  grid-auto-columns: minmax(1fr, 3fr); }

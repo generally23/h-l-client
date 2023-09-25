@@ -8,7 +8,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Share, Twitter, Facebook, Email, WhatsApp } from '@mui/icons-material';
 
 import PropertyCardDetail from './PropertyCardDetail';
-import SimpleCarousel from './SimpleCarousel';
+import SimpleCarousel from '../../customComponents/SimpleCarousel';
 
 const Property = ({
   images,
@@ -24,16 +24,14 @@ const Property = ({
   status,
 }) => {
   // if navigator does not support share api implement fall back
-  const onShare = e => {
+  const onShare = async e => {
     try {
       if (navigator.share) {
-        navigator.share({
+        return await navigator.share({
           url: propertyUrl,
           title: 'Checkout this property',
           text: 'Checkout this property',
         });
-
-        return true;
       }
 
       setShareOpen(!shareOpen);
@@ -53,6 +51,7 @@ const Property = ({
   const maxImages = images.length > 5 ? 5 : images.length;
   // thumbnails, +1 to inlcude item at that position
   const thumbnails = images.slice(0, maxImages);
+  // thumbnail names
   const thumbnailNames = imagesNames.slice(0, maxImages);
   // replica
   const replica = thumbnails[thumbnails.length - 1];
@@ -65,7 +64,6 @@ const Property = ({
   });
 
   const [shareOpen, setShareOpen] = useState(false);
-  console.log(shareOpen);
 
   return (
     <Grid xs={12} sm={6} lg={4} item>

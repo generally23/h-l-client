@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { selectProperties } from './propertiesSlice';
 import Property from './Property';
 import { Grid } from '@mui/material';
-import ControlForm from './ControlForm';
+import ControlForm from './Forms/Get/ControlForm';
 import PropertySkeleton from './PropertySkeleton';
 
 function Properties() {

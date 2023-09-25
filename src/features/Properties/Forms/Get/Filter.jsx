@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import RangeSlider from './Range.jsx';
+import RangeSlider from '../../../../customComponents/Range.jsx';
 function Filter() {
   const toggleFilter = e => {
     setOpen(!open);
@@ -9,9 +9,9 @@ function Filter() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className='filter relative'>
+    <div className='controls__filter relative mr-5'>
       <button
-        className='filter__toggler-btn py-1 px-3 border-2 border-black'
+        className='controls__filter__toggler-btn py-1 px-3 border-2 border-black h-full'
         type='button'
         onClick={toggleFilter}
       >
@@ -19,7 +19,9 @@ function Filter() {
         Filter
       </button>
       <div
-        className={`filter__box bg-white ${open ? 'filter__box--open' : ''}`}
+        className={`controls__filter__box bg-white ${
+          open ? 'controls__filter__box--open' : ''
+        }`}
       >
         <button onClick={toggleFilter}>X</button>
         <RangeSlider></RangeSlider>

@@ -3,13 +3,13 @@ import SearchIcon from '@mui/icons-material/Search';
 
 function Search({ search, onSearchChange, handleSearch }) {
   return (
-    <div className='controls__search relative mb-5 overflow-hidden flex'>
+    <div className='controls__search relative mb-5 overflow-hidden flex basis-full md:flex-grow md:mr-5 md:basis-auto md:mb-0'>
       <input
         type='search'
         className='
         controls__search__input    
-        py-1.5
-        px-2
+        py-2
+        px-3
         outline-none
         block
         flex-grow
@@ -28,7 +28,10 @@ function Search({ search, onSearchChange, handleSearch }) {
           grow-0 
         '
       >
-        <button className='px-4 p-y2' onClick={handleSearch}>
+        <button
+          className='controls__search__icon-btn px-4 p-y2'
+          onClick={handleSearch}
+        >
           <SearchIcon></SearchIcon>
         </button>
       </div>

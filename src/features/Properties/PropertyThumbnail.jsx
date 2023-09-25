@@ -25,6 +25,7 @@ function PropertyThumbnail({
             max-h-full
             max-w-full
             h-60
+            sm:h-64
           '
           src={src}
           srcSet=''
@@ -75,6 +76,7 @@ function PropertyThumbnail({
           max-h-full
           max-w-full
           h-60
+          sm:h-64
         '
           src={src}
           srcSet=''

@@ -2,9 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+// forms
 .signup-form,
-.signin-form {
-  box-shadow: 0 0 16px -5px rgba(0, 0, 0, 0.6);
+.signin-form,
+.change-password-form,
+.forgot-password-form,
+.reset-password-form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 2rem;
+  width: 90%;
+  border-radius: 8px;
+  background: #eee;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.4);
 }
 
 .signin-form__control:nth-child(2) {
@@ -19,7 +31,7 @@
 
   &__thumbnail {
     border-radius: 5px 5px 0 0;
-    touch-action: none;
+    // touch-action: none;
   }
 
   &__price {
@@ -37,11 +49,11 @@
   }
 }
 
-// property searching
+// property search, filter, sort, pagination controls
 .controls {
   &__search {
     &__input {
-      border: 0.2rem solid;
+      border: 0.15rem solid;
       border-right: none;
       border-radius: 2rem 0 0 2rem;
       border-r-0 rounded-r-none border-2 &:focus {
@@ -50,29 +62,44 @@
     }
 
     &__icon {
-      border: 0.2rem solid;
+      border: 0.15rem solid;
       border-radius: 0 2rem 2rem 0;
-      border-left: none;
+      border-left: 0.15rem solid;
     }
+  }
+
+  // property filtering
+  &__filter {
+    &__box {
+      position: fixed;
+      overflow-y: scroll;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      width: 100vw;
+      height: 0;
+      transition: 1s;
+      &--open {
+        height: 100vh;
+      }
+    }
+  }
+
+  &__sort {
+  }
+
+  &__paginate {
+    flex: 0 0 100%;
   }
 }
 
-// property filtering
-.filter {
-  &__box {
-    position: fixed;
-    overflow-y: scroll;
-    top: 0;
-    left: 0;
-    z-index: 100;
-    width: 100vw;
-    height: 0;
-    transition: 1s;
-    &--open {
-      height: 100vh;
-    }
-  }
-}
+// styles for sort popper
+// .sort-popper {
+//   position: absolute;
+//   border-radius: 1rem;
+//   top: 1rem;
+//   box-shadow: 0 0 10px 20px rgba(0, 0, 0, 0.6);
+// }
 
 // account
 .account {
@@ -80,7 +107,7 @@
     &__avatar {
       &__img {
         display: block;
-        border: 5px solid #15d17d;
+        border: 5px solid #087ec3;
         border-radius: 100%;
       }
     }
@@ -98,4 +125,41 @@
       // height: inherit;
     }
   }
+}
+
+.header {
+  .logo {
+  }
+
+  .navigation {
+    &__mobile {
+    }
+
+    &__opener {
+    }
+
+    .navbar {
+    }
+
+    &__desktop {
+    }
+  }
+}
+
+.links {
+  background: red;
+  padding: 20px;
+  // display: inline-flex;
+  // flex-wrap: wrap;
+  display: grid;
+  grid-auto-columns: minmax(1fr, 3fr);
+}
+
+.link {
+  // flex-grow: 0;
+  // flex-shrink: 0;
+}
+
+.link:not(:last-child) {
+  // margin-right: 10px;
 }

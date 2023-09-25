@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { selectProperties } from './propertiesSlice';
+import { selectProperties } from '../../propertiesSlice';
 import { useSelector } from 'react-redux';
 import Paginate from './Paginate';
 import Sort from './Sort';
@@ -81,9 +81,9 @@ function ControlForm({ children }) {
 
   return (
     <form className='controls mb-10' onSubmit={handleFormSubmit}>
-      {/* Search */}
-      <Search {...{ search, onSearchChange, handleSearch }} />
-      <div className='flex mb-5'>
+      <div className='flex flex-wrap mb-5'>
+        {/* Search */}
+        <Search {...{ search, onSearchChange, handleSearch }} />
         {/* Filter */}
         <Filter />
         {/* Sort */}

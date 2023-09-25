@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import ResetPasswordForm from '../features/Auth/ResetPasswordForm';
-import SuccessAlert from './SuccessAlert';
-import ErrorAlert from './ErrorAlert';
+import SuccessAlert from '../customComponents/SuccessAlert';
+import ErrorAlert from '../customComponents/ErrorAlert';
 
-function ResetPassword() {
+import ChangePasswordForm from '../features/Auth/ChangePasswordForm';
+
+function ChangePassword() {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -11,9 +12,9 @@ function ResetPassword() {
     <>
       {successMessage && <SuccessAlert message={successMessage} />}
       {errorMessage && <ErrorAlert message={errorMessage} />}
-      <ResetPasswordForm {...{ setSuccessMessage, setErrorMessage }} />
+      <ChangePasswordForm {...{ setSuccessMessage, setErrorMessage }} />
     </>
   );
 }
 
-export default ResetPassword;
+export default ChangePassword;

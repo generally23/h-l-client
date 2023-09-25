@@ -14,7 +14,7 @@ function Step2({
 }) {
   const [step] = useState(2);
 
-  const [passwordType, setPasswordType] = useState('password');
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   return (
     <div
@@ -23,6 +23,7 @@ function Step2({
         step--2 
         ${currentStep === step ? 'mb-3' : 'h-0 overflow-hidden'}`}
     >
+      {/* Password */}
       <div className='signup-form__password mb-2'>
         <label htmlFor='password' className='signup-form__label block mb-2'>
           Password*
@@ -31,18 +32,20 @@ function Step2({
         <div className='relative'>
           <input
             className='block w-full rounded border-2 border-black p-1 mb-1'
-            type={passwordType}
+            type={passwordVisible ? 'text' : 'password'}
             id='password'
+            name='password'
             value={password}
             onChange={onPasswordChange}
           />
 
-          <PasswordVisibility {...{ passwordType, setPasswordType }} />
+          <PasswordVisibility {...{ passwordVisible, setPasswordVisible }} />
         </div>
 
         <p className='signup-form__errormsg text-red-800'>{passwordError}</p>
       </div>
 
+      {/* Confirm Password */}
       <div className='signup-form__password-confirm mb-2'>
         <label
           htmlFor='confirm-password'
@@ -54,13 +57,13 @@ function Step2({
         <div className='relative'>
           <input
             className='block w-full rounded border-2 border-black p-1 mb-1'
-            type={passwordType}
+            type={passwordVisible ? 'text' : 'password'}
             id='confirm-password'
             value={confirmPassword}
             onChange={onConfirmPasswordChange}
           />
 
-          <PasswordVisibility {...{ passwordType, setPasswordType }} />
+          <PasswordVisibility {...{ passwordVisible, setPasswordVisible }} />
         </div>
 
         <p className='signup-form__errormsg text-red-800'>

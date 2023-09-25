@@ -6,7 +6,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 function Paginate({ pages, onPageChange, page }) {
   return (
-    <div className='pagination'>
+    <div className='controls__pagination'>
       <Pagination
         count={pages}
         onChange={onPageChange}

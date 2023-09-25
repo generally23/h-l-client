@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { isValidPassword, validateFields } from '../../utils/validate';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeMyPassword } from './accountsSlice';
-import Button from './Button';
+import Button from '../../customComponents/Button';
 import { useNavigate } from 'react-router-dom';
-import { getLocalAuth, setLocalAuth } from '../../utils';
 import PasswordVisibility from './PasswordVisibility';
 
 function ChangePasswordForm({ setSuccessMessage, setErrorMessage }) {
@@ -61,9 +60,6 @@ function ChangePasswordForm({ setSuccessMessage, setErrorMessage }) {
       setErrorMessage('');
       // redirect user after 2 seconds
       setTimeout(() => {
-        // set authentication status to true
-        setLocalAuth({ authenticated: true, account });
-
         redirect('/');
       }, 5000);
     }
@@ -83,21 +79,7 @@ function ChangePasswordForm({ setSuccessMessage, setErrorMessage }) {
   const [currentPasswordError, setCurrentPasswordError] = useState('');
 
   return (
-    <form
-      className='
-        change-password-form
-        absolute
-        top-1/2 left-1/2 
-        transform 
-        -translate-x-1/2 
-        -translate-y-1/2 
-        p-10
-        w-4/5
-        rounded-lg
-        bg-neutral-200
-    '
-      onSubmit={handleSubmit}
-    >
+    <form className='change-password-form' onSubmit={handleSubmit}>
       {/* Password */}
       <div className='change-password__password mb-2'>
         <label htmlFor='password' className='change-password__label block mb-2'>
@@ -125,7 +107,10 @@ function ChangePasswordForm({ setSuccessMessage, setErrorMessage }) {
 
       {/*  Confirmation Password */}
       <div className='change-password__password mb-2'>
-        <label htmlFor='' className='change-password__label block mb-2'>
+        <label
+          htmlFor='confirm-password'
+          className='change-password__label block mb-2'
+        >
           New Password: *
         </label>
         <div className='relative'>
@@ -133,6 +118,7 @@ function ChangePasswordForm({ setSuccessMessage, setErrorMessage }) {
             className='change-password__input block w-full rounded border-2 border-black p-2 mb-2'
             type={passwordType}
             value={newPassword}
+            id='confirm-password'
             onChange={onNewPasswordChange}
           />
           {/* Password View/Hide Icon */}

@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { isValidPassword, validateFields } from '../../utils/validate';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetMyPassword } from './accountsSlice';
-import Button from './Button';
+import Button from '../../customComponents/Button';
 import { useNavigate, useParams } from 'react-router-dom';
-import { setLocalAuth } from '../../utils';
 
 function ResetPasswordForm({ setSuccessMessage, setErrorMessage }) {
   const onPasswordChange = e => setPassword(e.target.value);
@@ -61,7 +60,6 @@ function ResetPasswordForm({ setSuccessMessage, setErrorMessage }) {
       // redirect user after 2 seconds
       setTimeout(() => {
         // set authentication status to true
-        setLocalAuth({ authenticated: true, account });
 
         redirect('/');
       }, 5000);
@@ -82,21 +80,7 @@ function ResetPasswordForm({ setSuccessMessage, setErrorMessage }) {
   const [newPasswordError, setNewPasswordError] = useState('');
 
   return (
-    <form
-      className='
-        reset-password-form
-        absolute
-        top-1/2 left-1/2 
-        transform 
-        -translate-x-1/2 
-        -translate-y-1/2 
-        p-10
-        w-4/5
-        rounded-lg
-        bg-neutral-200
-    '
-      onSubmit={handleSubmit}
-    >
+    <form className='reset-password-form' onSubmit={handleSubmit}>
       {/* Password */}
       <div className='reset-password__password mb-2'>
         <label htmlFor='' className='reset-password__label block mb-2'>

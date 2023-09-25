@@ -52,3 +52,82 @@ export const setLocalAuth = value => {
 export const removeLocalAuth = value => {
   sessionStorage.removeItem('authenticated');
 };
+
+export const alertAndRedirectBack =
+  (account, error, setSuccessMessage, setErrorMessage, redirect) => () => {
+    if (account) {
+      // show success message
+      setSuccessMessage('Successfully signed up!');
+      // reset error message if present
+      setErrorMessage('');
+      // redirect user after 2 seconds
+      setTimeout(() => {
+        // redirect
+        redirect(-1);
+      }, 5000);
+    }
+
+    if (error) {
+      // reset success message if present
+      setSuccessMessage('');
+      // show error message
+      setErrorMessage(error.message);
+    }
+  };
+
+// this computes an image size and resolution
+// image size has to be less than 5mb
+// image resolution has to HD+
+
+export const isAcceptableImage = async (file, options) => {
+  if (!file) return false;
+
+  let acceptable = true;
+  // default file size in 5mb in bytes
+  const defaultSize = 5 * 1024 * 1024;
+
+  const { resolution, size } = (options = {
+    size: defaultSize,
+    resolution: { width: 1920, height: 1080 },
+    ...options,
+  });
+
+  // check size and stop here if size is more than allowed
+  console.log(
+    `default size: ${defaultSize}bytes`,
+    `file size: ${file.size}bytes`
+  );
+  // if this is true then file is acceptable
+  acceptable = file.size <= size;
+
+  if (!acceptable) return false;
+
+  // create image to use as a container to help calculate file resolution
+  const image = new Image();
+
+  // create a URL object from file
+  const imageUrl = URL.createObjectURL(file);
+
+  // set img src to image url
+  image.src = imageUrl;
+
+  return new Promise(resolver => {
+    // listen for event when image has been successfully been loaded
+    image.addEventListener('load', e => {
+      // extract width and height from image
+      const { width, height } = image;
+
+      console.log('Image Width: ', width, 'Image height: ', height);
+
+      // set acceptable to false if resolution is lower than expected
+      if (width < resolution.width || height < resolution.height) {
+        acceptable = false;
+      }
+      // resole this promise
+      resolver(acceptable);
+
+      // revoke url object
+      URL.revokeObjectURL(imageUrl);
+    });
+  });
+};

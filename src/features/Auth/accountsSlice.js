@@ -1,25 +1,21 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { fetchData, postData, updateData } from '../../utils/crud';
-import { removeLocalAuth, setLocalAuth } from '../../utils';
 
 const baseURL = 'http://localhost:9090/api/v1/accounts';
 
-export const pending = state => {
-  return { ...initialState, loading: true };
-};
+export const pending = state => ({ ...initialState, loading: true });
 
 export const fulfilled = (state, payload) => {
-  state = { ...state, loading: false };
-  if (payload.isError)
-    return (state = { ...state, error: payload, account: null });
+  if (payload.isError) return { ...initialState, error: payload };
 
-  return (state = { ...state, error: null, account: payload });
+  return { ...initialState, account: payload };
 };
 
-export const rejected = (state, payload) => {
-  return { ...state, loading: false, account: null, error: payload };
-};
+export const rejected = (state, payload) => ({
+  ...initialState,
+  error: payload,
+});
 
 export const signup = createAsyncThunk(
   'accounts/signup',
@@ -29,11 +25,6 @@ export const signup = createAsyncThunk(
 export const signin = createAsyncThunk(
   'accounts/signin',
   postData(`${baseURL}/signin`)
-);
-
-export const signout = createAsyncThunk(
-  'accounts/signout',
-  postData(`${baseURL}/signout`)
 );
 
 export const changeMyPassword = createAsyncThunk(
@@ -79,18 +70,12 @@ export const resetMyPassword = createAsyncThunk(
   }
 );
 
-// this function is not a thunk does not affect state just to check if user is authed
-export const authenticate = async () => {
-  try {
-    const response = await axios.get(`${baseURL}/authenticate`, {
-      withCredentials: true,
-      cors: true,
-    });
-    return response.data;
-  } catch (error) {
-    return false;
-  }
-};
+export const sendVerificationCode = createAsyncThunk(
+  'accounts/sendVerificationCode',
+  fetchData(`${baseURL}/verification-code`)
+);
+
+export const verifyMyAccount = createAsyncThunk('accounts/verify', fetchData());
 
 export const fetchAccount = createAsyncThunk(
   'account/fetchMyAccount',
@@ -123,28 +108,13 @@ export const accountSlice = createSlice({
       .addCase(signup.rejected, (state, { payload }) =>
         rejected(state, payload)
       )
-      // signin
 
+      // signin
       .addCase(signin.pending, pending)
       .addCase(signin.fulfilled, (state, { payload }) =>
         fulfilled(state, payload)
       )
       .addCase(signin.rejected, (state, { payload }) =>
-        rejected(state, payload)
-      )
-
-      // signout
-      .addCase(signout.pending, pending)
-      .addCase(signout.fulfilled, (state, { payload }) => {
-        state = { ...state, loading: false };
-        if (payload.isError)
-          return (state = { ...state, error: payload, account: null });
-        // remove authentication status
-        removeLocalAuth({ authenticated: true, account: payload });
-
-        return (state = { ...state, error: null, account: payload });
-      })
-      .addCase(signout.rejected, (state, { payload }) =>
         rejected(state, payload)
       )
 
@@ -175,11 +145,30 @@ export const accountSlice = createSlice({
         rejected(state, payload)
       )
 
+      // reset password
       .addCase(resetMyPassword.pending, pending)
       .addCase(resetMyPassword.fulfilled, (state, { payload }) =>
         fulfilled(state, payload)
       )
       .addCase(resetMyPassword.rejected, (state, { payload }) =>
+        rejected(state, payload)
+      )
+
+      // get verification code
+      .addCase(sendVerificationCode.pending, pending)
+      .addCase(sendVerificationCode.fulfilled, (state, { payload }) =>
+        fulfilled(state, payload)
+      )
+      .addCase(sendVerificationCode.rejected, (state, { payload }) =>
+        rejected(state, payload)
+      )
+
+      // get verification code
+      .addCase(verifyMyAccount.pending, pending)
+      .addCase(verifyMyAccount.fulfilled, (state, { payload }) =>
+        fulfilled(state, payload)
+      )
+      .addCase(verifyMyAccount.rejected, (state, { payload }) =>
         rejected(state, payload)
       );
   },

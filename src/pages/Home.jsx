@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import Properties from '../features/Properties/Properties';
 import { fetchProperties } from '../features/Properties/propertiesSlice';
 import { useDispatch } from 'react-redux';
+import Header from '../customComponents/Header';
 
 function Home() {
   const onLocationSuccess = ({ coords }) => {
@@ -28,9 +29,12 @@ function Home() {
   const dispatch = useDispatch();
 
   return (
-    <div className='mx-5 my-8 sm:mx-5 md:mx-16 md:my-16 lg:mx-20'>
-      <Properties></Properties>
-    </div>
+    <>
+      <Header />
+      <main className='mx-5 my-8 sm:mx-5 md:mx-16 md:my-16 lg:mx-20'>
+        <Properties />
+      </main>
+    </>
   );
 }
 

@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { isValidEmail, validateFields } from '../../utils/validate';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { getLocalAuth } from '../../utils';
-import Button from './Button';
+import Button from '../../customComponents/Button';
 import { forgotMyPassword } from './accountsSlice';
 
 function ForgotPasswordForm({ setSuccessMessage, setErrorMessage }) {
@@ -66,21 +65,7 @@ function ForgotPasswordForm({ setSuccessMessage, setErrorMessage }) {
   const [emailError, setEmailError] = useState('');
 
   return (
-    <form
-      className='
-        forgot-password-form
-        absolute
-        top-1/2 left-1/2 
-        transform 
-        -translate-x-1/2 
-        -translate-y-1/2 
-        p-10
-        w-4/5
-        rounded-lg
-        bg-neutral-200
-    '
-      onSubmit={handleSubmit}
-    >
+    <form className='forgot-password-form' onSubmit={handleSubmit}>
       {/* Email */}
       <div
         className='

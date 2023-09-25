@@ -10,37 +10,41 @@ import {
 } from '../../utils/validate';
 import { signup } from './accountsSlice';
 
-import Button from './Button';
+import Button from '../../customComponents/Button';
 import Step1 from './Step1';
 import Step2 from './Step2';
-import { setLocalAuth } from '../../utils';
+import { alertAndRedirectBack, setLocalAuth } from '../../utils';
 import Step3 from './Step3';
+import { CircularProgress } from '@mui/material';
 
 const SignupForm = ({ setSuccessMessage, setErrorMessage }) => {
-  // event handler
+  // event handlers
   const onFirstameChange = e => setFirstname(e.target.value);
   const onLastameChange = e => setLastname(e.target.value);
   const onEmailChange = e => setEmail(e.target.value);
   const onPasswordChange = e => setPassword(e.target.value);
   const onConfirmPasswordChange = e => setConfirmPassword(e.target.value);
-  const onDobChange = e => setDob(e.target.value);
+
   const handleSubmit = e => {
     e.preventDefault();
 
-    // if (isValid) {
-    // }
+    const form = e.target;
 
-    dispatch(signup({ firstname, lastname, email, password }));
+    const formData = new FormData(form);
+
+    dispatch(signup(formData));
   };
   const handleClick = e => {
     e.preventDefault();
+
     const { type } = e.target.dataset;
 
     // allow user to go back to previous step
     type === 'prev' && setCurrentStep(currentStep - 1);
 
-    // validate step 1 before moving to next step
+    // validate steps before moving to next step
     if (type === 'next') {
+      // make sure 1st step is completed before moving to 2nd
       if (currentStep === 1) {
         const firstnameField = {
           value: firstname,
@@ -84,6 +88,7 @@ const SignupForm = ({ setSuccessMessage, setErrorMessage }) => {
         isValid && setCurrentStep(currentStep + 1);
       }
 
+      // make sure 2nd step is completed before moving to 3rd / last
       if (currentStep === 2) {
         const passwordField = {
           value: password,
@@ -109,7 +114,16 @@ const SignupForm = ({ setSuccessMessage, setErrorMessage }) => {
 
         const isValid = validateFields(passwordField, confirmPasswordField);
 
-        isValid && setCurrentStep(currentStep + 1);
+        if (!isValid) return;
+
+        // password and confirmation password have to be the same
+        if (password !== confirmPassword) {
+          return setConfirmPasswordError(
+            'Password and Confirmation Password are not the same'
+          );
+        }
+
+        setCurrentStep(currentStep + 1);
       }
     }
   };
@@ -126,10 +140,8 @@ const SignupForm = ({ setSuccessMessage, setErrorMessage }) => {
       setErrorMessage('');
       // redirect user after 2 seconds
       setTimeout(() => {
-        // set authentication status to true
-        setLocalAuth({ authenticated: true, account });
         // redirect
-        redirect('/');
+        redirect(-1);
       }, 5000);
     }
 
@@ -139,7 +151,7 @@ const SignupForm = ({ setSuccessMessage, setErrorMessage }) => {
       // show error message
       setErrorMessage(error.message);
     }
-  }, [account, error]);
+  }, [account, error, loading]);
 
   // input fields
   const [firstname, setFirstname] = useState('');
@@ -147,7 +159,6 @@ const SignupForm = ({ setSuccessMessage, setErrorMessage }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [dob, setDob] = useState('');
   // errors
   const [firstnameError, setFirstnameError] = useState('');
   const [lastnameError, setLastnameError] = useState('');
@@ -163,21 +174,7 @@ const SignupForm = ({ setSuccessMessage, setErrorMessage }) => {
   const nextStep = currentStep < lastStep;
 
   return (
-    <form
-      className='
-        signup-form 
-        absolute 
-        top-1/2 
-        left-1/2 
-        transform 
-        -translate-x-1/2 
-        -translate-y-1/2
-        p-10
-        w-4/5
-        rounded-lg
-      '
-      onSubmit={handleSubmit}
-    >
+    <form className='signup-form' onSubmit={handleSubmit}>
       <Step1
         {...{
           currentStep,
@@ -198,10 +195,8 @@ const SignupForm = ({ setSuccessMessage, setErrorMessage }) => {
           currentStep,
           onPasswordChange,
           onConfirmPasswordChange,
-          onDobChange,
           password,
           confirmPassword,
-          dob,
           passwordError,
           confirmPasswordError,
         }}
@@ -221,7 +216,16 @@ const SignupForm = ({ setSuccessMessage, setErrorMessage }) => {
           <Button type='next' handleClick={handleClick}>
             Next
           </Button>
-        )) || <Button type='signup'>Sign Up</Button>}
+        )) || (
+          <Button type='signup' classNames='flex items-center justify-center'>
+            <span className='mr-2'>Sign Up</span>
+            {loading && (
+              <span>
+                <CircularProgress size={25} />
+              </span>
+            )}
+          </Button>
+        )}
       </div>
     </form>
   );

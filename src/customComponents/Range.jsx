@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
-import { formatMoney } from '../../utils';
+import { formatMoney } from '../utils';
 
 export default function RangeSlider() {
   const [value, setValue] = useState([1, 100]);

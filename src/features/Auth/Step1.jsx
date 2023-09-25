@@ -17,11 +17,8 @@ function Step1({
   return (
     <div
       className={`
-        signup-form__step step--1 
-        opacity-100
-        ease-in duration-3000
-        
-        ${currentStep === step ? 'mb-2' : 'h-0 overflow-hidden  opacity-0'}
+        signup-form__step signup-form__step--1 
+        ${currentStep === step ? 'mb-3' : 'h-0 overflow-hidden  opacity-0'}
       `}
     >
       {/* Firstname */}
@@ -37,11 +34,12 @@ function Step1({
             rounded 
             border-2 
             border-black 
-            p-1
+            p-1.5
             mb-1
           '
           type='text'
           id='firstname'
+          name='firstname'
           value={firstname}
           onChange={onFirstameChange}
         />
@@ -49,6 +47,7 @@ function Step1({
         <p className='signup-form__errormsg text-red-800'>{firstnameError}</p>
       </div>
 
+      {/* Lastname */}
       <div className='signup-form__lastname mb-2'>
         <label htmlFor='lastname' className='signup-form__label block mb-2'>
           Last Name*
@@ -60,10 +59,11 @@ function Step1({
             rounded 
             border-2 
             border-black 
-            p-1
+            p-1.5
             mb-1
           '
           id='lastname'
+          name='lastname'
           type='text'
           value={lastname}
           onChange={onLastameChange}
@@ -71,6 +71,8 @@ function Step1({
 
         <p className='signup-form__errormsg text-red-800'>{lastnameError}</p>
       </div>
+
+      {/* Email */}
       <div className='signup-form__email mb-2'>
         <label htmlFor='email' className='signup-form__label block mb-2'>
           Email*
@@ -83,11 +85,12 @@ function Step1({
             rounded 
             border-2 
             border-black 
-            p-1
+            p-1.5
             mb-1
           '
           type='text'
           id='email'
+          name='email'
           value={email}
           onChange={onEmailChange}
         />

@@ -5,7 +5,7 @@ function ErrorAlert({ message = '' }) {
   return (
     <div className='p-2'>
       <Alert severity='error' variant='filled'>
-        <AlertTitle>Error</AlertTitle>
+        <AlertTitle>Erreur</AlertTitle>
         {message}
       </Alert>
     </div>
