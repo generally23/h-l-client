@@ -5,7 +5,13 @@ import PropertyThumbnail from './PropertyThumbnail';
 import { Link } from 'react-router-dom';
 import { formatMoney } from '../../utils';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import { Share, Twitter, Facebook, Email, WhatsApp } from '@mui/icons-material';
+import { Share } from '@mui/icons-material';
+import {
+  TwitterLogo,
+  FacebookLogo,
+  EmailLogo,
+  WhatsAppLogo,
+} from '../../customComponents/SocialMediaLogos';
 
 import PropertyCardDetail from './PropertyCardDetail';
 import SimpleCarousel from '../../customComponents/SimpleCarousel';
@@ -56,10 +62,10 @@ const Property = ({
   // replica
   const replica = thumbnails[thumbnails.length - 1];
 
-  const imageThumbnails = thumbnails.map(({ src, srcSet }, index) => {
+  const imageThumbnails = thumbnails.map(({ src, srcset }, index) => {
     const imageName = thumbnailNames[index];
     return (
-      <PropertyThumbnail key={src} src={src} srcSet={srcSet} propertyId={id} />
+      <PropertyThumbnail key={src} src={src} srcSet={srcset} propertyId={id} />
     );
   });
 
@@ -75,7 +81,7 @@ const Property = ({
           </Carousel>
         </div>
 
-        <h1 className='property__price px-3 py-2 bg-green-400 text-xl font-medium'>
+        <h1 className='property__price px-3 py-2 text-2xl font-bold tracking-wider'>
           {formatMoney(price)} FG
         </h1>
 
@@ -141,16 +147,16 @@ const Property = ({
               `}
             >
               <a className='mr-4' target='_blank' href={`${facebookShare}`}>
-                <Facebook fontSize='large' sx={{ fill: '#375899' }}></Facebook>
+                <FacebookLogo />
               </a>
               <a className='mr-4' target='_blank' href={`${twitterShare}`}>
-                <Twitter fontSize='large' sx={{ fill: '#1d9bf0' }}></Twitter>
+                <TwitterLogo />
               </a>
               <a className='mr-4' target='_blank' href={`${emailShare}`}>
-                <Email fontSize='large' sx={{ fill: '' }}></Email>
+                <EmailLogo />
               </a>
               <a className='' target='_blank' href={`${whatsappShare}`}>
-                <WhatsApp fontSize='large' sx={{ fill: '#24d366' }}></WhatsApp>
+                <WhatsAppLogo />
               </a>
             </div>
           </div>

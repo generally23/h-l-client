@@ -1,3 +1,5 @@
+import { Navigation, Pagination } from 'swiper/modules';
+
 export const formatMoney = (number = 0) => {
   number = String(number);
   // don't format numbers 4 characters and less
@@ -130,4 +132,55 @@ export const isAcceptableImage = async (file, options) => {
       URL.revokeObjectURL(imageUrl);
     });
   });
+};
+
+export const formatSrset = (srcSet = []) => {
+  return srcSet
+    .reduce((accumulator, currentValue) => {
+      // Split each element by '-' to separate the parts
+      const parts = currentValue.split('-');
+
+      const width = parts[parts.length - 1];
+
+      // Format the string and add it to the accumulator
+      accumulator.push(`${currentValue} ${width}w`);
+
+      return accumulator;
+    }, [])
+    .join(', ');
+};
+
+// extendable
+export const basicSwiperOptions = {
+  slidesPerView: 3,
+  spaceBetween: 50,
+  pagination: {
+    clickable: true,
+  },
+
+  breakpoints: {
+    0: {
+      slidesPerView: 1,
+      spaceBetween: 0,
+    },
+    450: {
+      slidesPerView: 2,
+      spaceBetween: 10,
+    },
+    640: {
+      slidesPerView: 2,
+      spaceBetween: 20,
+    },
+    768: {
+      slidesPerView: 3,
+      spaceBetween: 30,
+    },
+    1024: {
+      slidesPerView: 3,
+      spaceBetween: 40,
+    },
+  },
+  lazy: 'true',
+  navigation: true,
+  modules: [Pagination, Navigation],
 };

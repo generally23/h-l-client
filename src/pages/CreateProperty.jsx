@@ -35,7 +35,6 @@ function CreateProperty() {
 
   return (
     <>
-      <Header />
       {notAllowed && <ErrorAlert message={errorMessage}></ErrorAlert>}
       {account && account.verified && <CreatePropertyForm type={type} />}
     </>

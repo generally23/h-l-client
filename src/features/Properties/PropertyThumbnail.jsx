@@ -1,13 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { formatSrset } from '../../utils';
 
 function PropertyThumbnail({
   src,
-  srcSet,
+  srcset,
   propertyId,
   isReplica = false,
   imagename,
 }) {
+  const formattedSrcSet = formatSrset(srcset);
+
+  console.log(srcset, formattedSrcSet);
+
   const jsx = (isReplica && (
     <>
       <div
@@ -22,13 +27,12 @@ function PropertyThumbnail({
             property__thumbnail__image__photo 
             object-cover 
             blur-md
-            max-h-full
-            max-w-full
             h-60
-            sm:h-64
+            img:h-80
+            lg:h-72
           '
           src={src}
-          srcSet=''
+          srcSet={formattedSrcSet}
           alt='Property Image'
         />
       </div>
@@ -68,21 +72,20 @@ function PropertyThumbnail({
         w-full
       '
     >
-      <Link to={`/${propertyId}/images/${src}`}>
-        <img
-          className='
+      <img
+        className='
           property__thumbnail__image__photo 
           object-cover
-          max-h-full
-          max-w-full
           h-60
-          sm:h-64
+          img:h-80
+          lg:h-72
         '
-          src={src}
-          srcSet=''
-          alt='Property Image'
-        />
-      </Link>
+        src={src}
+        srcSet={formattedSrcSet}
+        sizes='min-width(600px) 50vw min-width(1200px) calc(100vw / 3) 100w'
+        alt='Property Image'
+      />
+      {/* <Link to={`/${propertyId}/images/${src}`}></Link> */}
     </div>
   );
 

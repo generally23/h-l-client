@@ -3,7 +3,11 @@ module.exports = {
   important: '#app',
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      screens: {
+        img: [{ min: '440px', max: '600px' }],
+      },
+    },
   },
-  plugins: [require('@tailwindcss/typography')],
+  plugins: [],
 };

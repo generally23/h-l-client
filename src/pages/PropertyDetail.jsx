@@ -7,7 +7,7 @@ import {
 } from '../features/Properties/propertySlice';
 import { CustomTabPanel } from '../customComponents/CustomTab';
 import LightGallery from 'lightgallery/react';
-import { formatMoney } from '../utils';
+import { formatMoney, formatSrset } from '../utils';
 
 // import styles
 import 'lightgallery/css/lightgallery.css';
@@ -21,7 +21,6 @@ import lgZoom from 'lightgallery/plugins/zoom';
 import ColorTabs from '../customComponents/CustomTab';
 import { selectProperties } from '../features/Properties/propertiesSlice';
 import ErrorAlert from '../customComponents/ErrorAlert';
-import Header from '../customComponents/Header';
 
 function Property({ property }) {
   const [photoRevealed, setPhotoRevealed] = useState(false);
@@ -65,6 +64,7 @@ function Property({ property }) {
                   className='block w-full'
                   alt='Property Image'
                   src={`${img.src}`}
+                  srcSet={formatSrset(img.srcset)}
                 />
               </a>
             ))}
@@ -206,7 +206,6 @@ function PropertyDetail() {
 
   return (
     <div>
-      <Header />
       {error && <ErrorAlert message={error.message} />}
       {<Property property={localProperty ? localProperty : property} />}
     </div>

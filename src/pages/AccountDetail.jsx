@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { getLocalAuth } from '../utils';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import MyProperties from '../features/Properties/MyProperties';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,6 +8,7 @@ import {
 } from '../features/Properties/myPropertiesSlice';
 import { sendVerificationCode } from '../features/Auth/accountsSlice';
 import { CircularProgress } from '@mui/material';
+import ErrorAlert from '../customComponents/ErrorAlert';
 
 function Account({ firstname, lastname, email, avatarUrls, verified }) {
   const dispatch = useDispatch();
@@ -24,7 +24,7 @@ function Account({ firstname, lastname, email, avatarUrls, verified }) {
     loading: verifying,
     error: accountError,
     account,
-  } = useSelector(state => state.account);
+  } = useSelector(state => state.authentication);
 
   console.log(loading, error, properties);
 
@@ -35,7 +35,7 @@ function Account({ firstname, lastname, email, avatarUrls, verified }) {
   return (
     <>
       <div className='account m-5 sm:m-10 md:m-20 lg:m-32'>
-        <div className='account__info mb-5 bg-white p-5 shadow-xl'>
+        <div className='account__info mb-5 bg-white py-5 px-10 sm:inline-block'>
           <div className='flex mb-2'>
             <div className='account__info__avatar grow-0 shrink-0 mr-5'>
               <img
@@ -80,21 +80,23 @@ function Account({ firstname, lastname, email, avatarUrls, verified }) {
 
         <ul className='account__action mb-10 capitalize text-blue-950'>
           <li className='account__action__item'>
-            <Link to='/'>Page D'acceuil</Link>
+            <Link to='/'>Acceuil</Link>
+          </li>
+
+          <li className='account__action__item'>
+            <Link to='/signout'>Me deconnecter</Link>
           </li>
 
           <li className='account__action__item'>
             <Link to=''>Modifiez mes infos</Link>
           </li>
+
           <li className='account__action__item'>
             <Link to='/my-account/change-my-password'>
               Changer mon mot de passe
             </Link>
           </li>
 
-          <li className='account__action__item'>
-            <Link to='/signout'>Me deconnecter</Link>
-          </li>
           <li className='account__action__item'>
             <Link to=''>Supprimer mon compte</Link>
           </li>
@@ -114,15 +116,25 @@ function Account({ firstname, lastname, email, avatarUrls, verified }) {
 }
 
 function AccountDetail() {
-  const { account } = useSelector(state => state.authentication);
+  const { account, error } = useSelector(state => state.authentication);
 
   const redirect = useNavigate();
 
-  useEffect(() => {
-    if (!account) redirect('/signin');
-  }, []);
+  const [errMsg, setErrMsg] = useState('');
 
-  return <>{account && <Account {...account} />}</>;
+  useEffect(() => {
+    if (!account && error) {
+      setErrMsg(error.message);
+      setTimeout(() => redirect('/signin'), 3000);
+    }
+  }, [account, error]);
+
+  return (
+    <>
+      {errMsg && <ErrorAlert message={errMsg} />}
+      {account && <Account {...account} />}
+    </>
+  );
 }
 
 export default AccountDetail;

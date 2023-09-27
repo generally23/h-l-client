@@ -3,7 +3,6 @@ import SigninForm from '../features/Auth/SigninForm';
 import { Link, useNavigate } from 'react-router-dom';
 import SuccessAlert from '../customComponents/SuccessAlert';
 import ErrorAlert from '../customComponents/ErrorAlert';
-import Header from '../customComponents/Header';
 import { useSelector } from 'react-redux';
 
 function Signin() {
@@ -24,11 +23,10 @@ function Signin() {
 
   return (
     <>
-      <Header />
       {successMessage && <SuccessAlert message={successMessage} />}
       {errorMessage && <ErrorAlert message={errorMessage} />}
       {!account && (
-        <div className='signup mt-32 '>
+        <div className='signin mt-32 '>
           <h1 className='font-bold text-3xl text-center mb-2'>Pas Inscrit?</h1>
           <div className='signup__link text-center'>
             <Link to='/signup' className='inline-block text-blue-500'>

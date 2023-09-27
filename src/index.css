@@ -1,20 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+img,
+video {
+  max-width: 100%; }
+
 .signup-form,
 .signin-form,
 .change-password-form,
 .forgot-password-form,
 .reset-password-form {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   padding: 2rem;
   width: 90%;
   border-radius: 8px;
   background: #eee;
-  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.4); }
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.4);
+  margin: 5rem auto; }
 
 .signin-form__control:nth-child(2) {
   margin-bottom: 0; }
@@ -24,6 +25,15 @@
   box-shadow: 0 0 20px -5px rgba(0, 0, 0, 0.6); }
   .property__thumbnail {
     border-radius: 5px 5px 0 0; }
+  .property__price {
+    text-shadow: 2px 3px 10px rgba(0, 0, 0, 0.5);
+    color: #eee;
+    background: rgba(195, 21, 125, 0.9);
+    display: inline-block;
+    clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
+    min-width: 60%;
+    translate: -10px 0;
+    text-align: center; }
   .property__share__fallback {
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.25);
     background: rgba(255, 255, 255, 0.8); }
@@ -55,16 +65,16 @@
 .controls__paginate {
   flex: 0 0 100%; }
 
-.account__info__avatar__img {
-  display: block;
-  border: 5px solid #087ec3;
-  border-radius: 100%; }
+.account__info {
+  box-shadow: 0 0 20px -5px rgba(0, 0, 0, 0.5) inset; }
+  .account__info__avatar__img {
+    display: block;
+    border: 5px solid #087ec3;
+    border-radius: 100%; }
 
 .carousel__slider > * {
   flex: 0 0 auto; }
 
-.links {
-  background: red;
-  padding: 20px;
-  display: grid;
-  grid-auto-columns: minmax(1fr, 3fr); }
+.footer__navigation__link {
+  white-space: nowrap;
+  padding: 0.5rem; }

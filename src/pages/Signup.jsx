@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getLocalAuth } from '../utils';
 import SuccessAlert from '../customComponents/SuccessAlert';
 import ErrorAlert from '../customComponents/ErrorAlert';
-import Header from '../customComponents/Header';
 import { useSelector } from 'react-redux';
 
 function Signup() {
@@ -25,7 +24,6 @@ function Signup() {
 
   return (
     <>
-      <Header />
       {successMessage && <SuccessAlert message={successMessage} />}
       {errorMessage && <ErrorAlert message={errorMessage} />}
       {!account && (

@@ -2,21 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+$shadow-black: rgba(0, 0, 0, 0.5);
+
+// image and video resets
+img,
+video {
+  max-width: 100%;
+}
+
 // forms
 .signup-form,
 .signin-form,
 .change-password-form,
 .forgot-password-form,
 .reset-password-form {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  // position: absolute;
+  // top: 50%;
+  // left: 50%;
+  // transform: translate(-50%, -50%);
   padding: 2rem;
   width: 90%;
   border-radius: 8px;
   background: #eee;
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.4);
+  margin: 5rem auto;
 }
 
 .signin-form__control:nth-child(2) {
@@ -35,6 +44,14 @@
   }
 
   &__price {
+    text-shadow: 2px 3px 10px rgba(0, 0, 0, 0.5);
+    color: #eee;
+    background: rgba(195, 21, 125, 0.9);
+    display: inline-block;
+    clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
+    min-width: 60%;
+    translate: -10px 0;
+    text-align: center;
   }
 
   &__share {
@@ -104,6 +121,7 @@
 // account
 .account {
   &__info {
+    box-shadow: 0 0 20px -5px $shadow-black inset;
     &__avatar {
       &__img {
         display: block;
@@ -146,20 +164,24 @@
   }
 }
 
-.links {
-  background: red;
-  padding: 20px;
-  // display: inline-flex;
-  // flex-wrap: wrap;
-  display: grid;
-  grid-auto-columns: minmax(1fr, 3fr);
-}
-
-.link {
-  // flex-grow: 0;
-  // flex-shrink: 0;
-}
-
-.link:not(:last-child) {
-  // margin-right: 10px;
+.footer {
+  // overflow: hidden;
+  // &::before {
+  //   content: '';
+  //   width: 100%;
+  //   height: 100%;
+  //   display: block;
+  //   position: absolute;
+  //   top: -90%;
+  //   //transform: translateY(50%);
+  //   border-radius: 50%;
+  //   left: 0;
+  //   background: white;
+  // }
+  &__navigation {
+    &__link {
+      white-space: nowrap;
+      padding: 0.5rem;
+    }
+  }
 }

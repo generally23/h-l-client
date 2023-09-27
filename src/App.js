@@ -16,6 +16,8 @@ import Test from './pages/Test';
 import VerifyAccount from './pages/VerifyAccount';
 import Logout from './pages/Logout';
 import { useDispatch } from 'react-redux';
+import Footer from './customComponents/Footer';
+import Header from './customComponents/Header';
 
 function App() {
   // delete auth status make sure user authenticate
@@ -27,6 +29,7 @@ function App() {
 
   return (
     <div className='App' id='app'>
+      <Header />
       {/* <Link to='/signup'>Sign Up</Link>
         <Link to='/signin'>Sign In</Link> */}
 
@@ -84,6 +87,8 @@ function App() {
           <Route path='*' element={<div>not found 404</div>} />
         </Route>
       </Routes>
+
+      <Footer />
     </div>
   );
 }

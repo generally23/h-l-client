@@ -5,7 +5,7 @@ const baseURL = 'http://localhost:9090/api/v1/properties';
 
 const initialState = {
   loading: false,
-  properties: null,
+  properties: [],
   error: null,
 };
 

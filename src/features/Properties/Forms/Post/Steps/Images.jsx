@@ -3,95 +3,130 @@ import Button from '../../../../../customComponents/Button';
 import { Close } from '@mui/icons-material';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, FreeMode } from 'swiper/modules';
+import { Navigation, Pagination } from 'swiper/modules';
+import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import { isAcceptableImage } from '../../../../../utils';
+import { basicSwiperOptions, isAcceptableImage } from '../../../../../utils';
+import { nanoid } from '@reduxjs/toolkit';
+
+const ImagePreviews = ({ images, onDelete, onReplace }) => {
+  const swiperOptions = {};
+
+  return (
+    <Swiper className='mySwiper' {...basicSwiperOptions}>
+      {images.map(image => {
+        const imageUrl = URL.createObjectURL(image);
+        const statusClass = image.isAcceptable
+          ? 'border-green-400'
+          : 'border-red-500';
+
+        const sizeInMb = Math.ceil(image.size / (1000 * 1024));
+
+        return (
+          <SwiperSlide key={nanoid(32)}>
+            <div className='preview__item p-5 mb-5'>
+              <div
+                className={`preview__item__container bg-white shadow-md relative border-2 rounded-lg overflow-hidden ${statusClass}`}
+              >
+                <button
+                  className='delete-icon absolute top-0 right-0 p-5'
+                  data-deleteid={image.fileId}
+                  onClick={onDelete}
+                  type='button'
+                >
+                  <Close />
+                </button>
+                <figure className='thumbnail'>
+                  <label
+                    htmlFor='replacement'
+                    className='block'
+                    onClick={console.log}
+                  >
+                    <img
+                      src={imageUrl}
+                      alt='Thumbnail'
+                      onLoad={() => URL.revokeObjectURL(imageUrl)}
+                      className='thumbnail__img block h-52 w-full'
+                    />
+                  </label>
+
+                  <div className='thumbnail__meta py-2 px-5 flex justify-between text-sm'>
+                    <span className='thumbnail__meta__size'>{sizeInMb}Mb</span>
+                    <span
+                      className={`thumbnail__meta__size ${
+                        image.isAcceptable ? 'text-green-500' : 'text-red-500'
+                      }`}
+                    >
+                      HD
+                    </span>
+                  </div>
+                </figure>
+              </div>
+            </div>
+          </SwiperSlide>
+        );
+      })}
+      {/* {uploadedFiles.map(file => (
+      <ImagePreview key={file.name + Date.now()} {...{ file }} />
+    ))} */}
+    </Swiper>
+  );
+};
 
 function Images({ currentStep, onPrevStep, type }) {
-  const swiperOptions = {
-    slidesPerView: 3,
-    spaceBetween: 50,
-
-    breakpoints: {
-      0: {
-        slidesPerView: 1,
-        spaceBetween: 0,
-      },
-      450: {
-        slidesPerView: 2,
-        spaceBetween: 10,
-      },
-      640: {
-        slidesPerView: 2,
-        spaceBetween: 20,
-      },
-      768: {
-        slidesPerView: 3,
-        spaceBetween: 30,
-      },
-      1024: {
-        slidesPerView: 3,
-        spaceBetween: 40,
-      },
-    },
-    lazy: 'true',
-    navigation: true,
-    modules: [Navigation, FreeMode],
-  };
-
-  const [step] = useState(type === 'land' ? 4 : 5);
-
-  const [acceptedFiles, setAcceptedFiles] = useState([]);
-  const [rejectedFiles, setRejectedFiles] = useState([]);
-
-  const [uploadedFilesLength, setUploadedFilesLength] = useState(0);
-  const [ignoredFilesLength, setIgnoredFilesLength] = useState(0);
-
-  const maxFiles = 40;
-
-  // const duplicates = {};
-
   const onReplace = e => {};
 
-  const onDelete = e => {};
+  const onDelete = e => {
+    const btn = e.target.closest('button');
+
+    const { deleteid } = btn.dataset;
+
+    const rest = uploadedFiles.filter(file => {
+      console.log(file, deleteid);
+      return file.fileId !== deleteid;
+    });
+
+    setUploadedFiles(rest);
+  };
 
   const onUpload = async e => {
     // uploaded files
     let files = Array.from(e.target.files);
-    const filesLength = files.length;
-    const accepts = [];
-    const rejects = [];
-    // length of files that are uploaded past the maxFiles allowed
-    let excludesLength = filesLength > maxFiles ? filesLength - maxFiles : 0;
 
-    for (let image of files.slice(0, maxFiles)) {
-      // check if image is accepted. use (size, resolution)
-      const isAccepted = await isAcceptableImage(image);
+    e.target.value = '';
 
-      // console.log(isAccepted);
+    const uploadedLength = uploadedFiles.length;
 
-      !isAccepted ? rejects.push(image) : accepts.push(image);
+    if (uploadedLength + files.length > maxFiles) {
+      // is uploaded full
+      if (uploadedLength === maxFiles) return;
+
+      // how much do we need to fill uploaded to max allowed
+      const spacesLeft = maxFiles - uploadedLength;
+
+      // ignore files that are positioned past the max allowed
+      files = files.slice(0, spacesLeft);
     }
 
-    setUploadedFilesLength(filesLength);
+    // add custom info to each file
+    for (let file of files) {
+      const isAcceptable = await isAcceptableImage(file);
+      file.isAcceptable = isAcceptable;
+      file.fileId = nanoid();
+    }
 
-    setIgnoredFilesLength(excludesLength);
-
-    setRejectedFiles(rejects);
-
-    setAcceptedFiles(accepts);
+    files.length && setUploadedFiles([...files, ...uploadedFiles]);
   };
 
-  console.log(
-    acceptedFiles,
-    rejectedFiles,
-    uploadedFilesLength,
-    ignoredFilesLength
-  );
+  const [step] = useState(type === 'land' ? 4 : 5);
+
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+
+  const maxFiles = 40;
 
   const acceptedExtensions = 'image/png, image/jpg, image/jpeg, image/webp';
 
@@ -107,6 +142,7 @@ function Images({ currentStep, onPrevStep, type }) {
         <input
           type='file'
           id='images'
+          className='hidden'
           multiple
           accept={acceptedExtensions}
           onChange={onUpload}
@@ -119,259 +155,12 @@ function Images({ currentStep, onPrevStep, type }) {
         />
 
         <div className='preview'>
-          <Swiper className='mySwiper' {...swiperOptions}>
-            <SwiperSlide>
-              <div className='preview__item p-5'>
-                <div className='preview__item__container bg-white shadow-md relative border-2 border-green-400 rounded-lg overflow-hidden'>
-                  <button className='delete-icon absolute top-0 right-0 p-5'>
-                    <Close />
-                  </button>
-                  <figure className='thumbnail'>
-                    <label
-                      htmlFor='replacement'
-                      className='block'
-                      onClick={console.log}
-                    >
-                      <img
-                        src='https://d21jok9tqndbay.cloudfront.net/property-img-b3d7r71w4tlm6hykx6'
-                        alt='THUMBNAIL'
-                        className='thumbnail__img block h-52 w-full'
-                      />
-                    </label>
-
-                    <div className='thumbnail__meta py-2 px-5 flex justify-between text-sm'>
-                      <span className='thumbnail__meta__size'>5mb</span>
-                      <span className='thumbnail__meta__size'>HD</span>
-                    </div>
-                  </figure>
-                </div>
-              </div>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <div className='preview__item p-5'>
-                <div className='preview__item__container bg-white shadow-md relative border-2 border-green-400 rounded-lg overflow-hidden'>
-                  <button className='delete-icon absolute top-0 right-0 p-5'>
-                    <Close />
-                  </button>
-                  <figure className='thumbnail'>
-                    <label
-                      htmlFor='replacement'
-                      className='block'
-                      onClick={console.log}
-                    >
-                      <img
-                        src='https://d21jok9tqndbay.cloudfront.net/property-img-b3d7r71w4tlm6hykx6'
-                        alt='THUMBNAIL'
-                        className='thumbnail__img block h-52 w-full'
-                      />
-                    </label>
-
-                    <div className='thumbnail__meta py-2 px-5 flex justify-between text-sm'>
-                      <span className='thumbnail__meta__size'>5mb</span>
-                      <span className='thumbnail__meta__size'>HD</span>
-                    </div>
-                  </figure>
-                </div>
-              </div>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <div className='preview__item p-5'>
-                <div className='preview__item__container bg-white shadow-md relative border-2 border-green-400 rounded-lg overflow-hidden'>
-                  <button className='delete-icon absolute top-0 right-0 p-5'>
-                    <Close />
-                  </button>
-                  <figure className='thumbnail'>
-                    <label
-                      htmlFor='replacement'
-                      className='block'
-                      onClick={console.log}
-                    >
-                      <img
-                        src='https://d21jok9tqndbay.cloudfront.net/property-img-b3d7r71w4tlm6hykx6'
-                        alt='THUMBNAIL'
-                        className='thumbnail__img block h-52 w-full'
-                      />
-                    </label>
-
-                    <div className='thumbnail__meta py-2 px-5 flex justify-between text-sm'>
-                      <span className='thumbnail__meta__size'>5mb</span>
-                      <span className='thumbnail__meta__size'>HD</span>
-                    </div>
-                  </figure>
-                </div>
-              </div>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <div className='preview__item p-5'>
-                <div className='preview__item__container bg-white shadow-md relative border-2 border-green-400 rounded-lg overflow-hidden'>
-                  <button className='delete-icon absolute top-0 right-0 p-5'>
-                    <Close />
-                  </button>
-                  <figure className='thumbnail'>
-                    <label
-                      htmlFor='replacement'
-                      className='block'
-                      onClick={console.log}
-                    >
-                      <img
-                        src='https://d21jok9tqndbay.cloudfront.net/property-img-b3d7r71w4tlm6hykx6'
-                        alt='THUMBNAIL'
-                        className='thumbnail__img block h-52 w-full'
-                      />
-                    </label>
-
-                    <div className='thumbnail__meta py-2 px-5 flex justify-between text-sm'>
-                      <span className='thumbnail__meta__size'>5mb</span>
-                      <span className='thumbnail__meta__size'>HD</span>
-                    </div>
-                  </figure>
-                </div>
-              </div>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <div className='preview__item p-5'>
-                <div className='preview__item__container bg-white shadow-md relative border-2 border-green-400 rounded-lg overflow-hidden'>
-                  <button className='delete-icon absolute top-0 right-0 p-5'>
-                    <Close />
-                  </button>
-                  <figure className='thumbnail'>
-                    <label
-                      htmlFor='replacement'
-                      className='block'
-                      onClick={console.log}
-                    >
-                      <img
-                        src='https://d21jok9tqndbay.cloudfront.net/property-img-b3d7r71w4tlm6hykx6'
-                        alt='THUMBNAIL'
-                        className='thumbnail__img block h-52 w-full'
-                      />
-                    </label>
-
-                    <div className='thumbnail__meta py-2 px-5 flex justify-between text-sm'>
-                      <span className='thumbnail__meta__size'>5mb</span>
-                      <span className='thumbnail__meta__size'>HD</span>
-                    </div>
-                  </figure>
-                </div>
-              </div>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <div className='preview__item p-5'>
-                <div className='preview__item__container bg-white shadow-md relative border-2 border-green-400 rounded-lg overflow-hidden'>
-                  <button className='delete-icon absolute top-0 right-0 p-5'>
-                    <Close />
-                  </button>
-                  <figure className='thumbnail'>
-                    <label
-                      htmlFor='replacement'
-                      className='block'
-                      onClick={console.log}
-                    >
-                      <img
-                        src='https://d21jok9tqndbay.cloudfront.net/property-img-b3d7r71w4tlm6hykx6'
-                        alt='THUMBNAIL'
-                        className='thumbnail__img block h-52 w-full'
-                      />
-                    </label>
-
-                    <div className='thumbnail__meta py-2 px-5 flex justify-between text-sm'>
-                      <span className='thumbnail__meta__size'>5mb</span>
-                      <span className='thumbnail__meta__size'>HD</span>
-                    </div>
-                  </figure>
-                </div>
-              </div>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <div className='preview__item p-5'>
-                <div className='preview__item__container bg-white shadow-md relative border-2 border-green-400 rounded-lg overflow-hidden'>
-                  <button className='delete-icon absolute top-0 right-0 p-5'>
-                    <Close />
-                  </button>
-                  <figure className='thumbnail'>
-                    <label
-                      htmlFor='replacement'
-                      className='block'
-                      onClick={console.log}
-                    >
-                      <img
-                        src='https://d21jok9tqndbay.cloudfront.net/property-img-b3d7r71w4tlm6hykx6'
-                        alt='THUMBNAIL'
-                        className='thumbnail__img block h-52 w-full'
-                      />
-                    </label>
-
-                    <div className='thumbnail__meta py-2 px-5 flex justify-between text-sm'>
-                      <span className='thumbnail__meta__size'>5mb</span>
-                      <span className='thumbnail__meta__size'>HD</span>
-                    </div>
-                  </figure>
-                </div>
-              </div>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <div className='preview__item p-5'>
-                <div className='preview__item__container bg-white shadow-md relative border-2 border-green-400 rounded-lg overflow-hidden'>
-                  <button className='delete-icon absolute top-0 right-0 p-5'>
-                    <Close />
-                  </button>
-                  <figure className='thumbnail'>
-                    <label
-                      htmlFor='replacement'
-                      className='block'
-                      onClick={console.log}
-                    >
-                      <img
-                        src='https://d21jok9tqndbay.cloudfront.net/property-img-b3d7r71w4tlm6hykx6'
-                        alt='THUMBNAIL'
-                        className='thumbnail__img block h-52 w-full'
-                      />
-                    </label>
-
-                    <div className='thumbnail__meta py-2 px-5 flex justify-between text-sm'>
-                      <span className='thumbnail__meta__size'>5mb</span>
-                      <span className='thumbnail__meta__size'>HD</span>
-                    </div>
-                  </figure>
-                </div>
-              </div>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <div className='preview__item p-5'>
-                <div className='preview__item__container bg-white shadow-md relative border-2 border-green-400 rounded-lg overflow-hidden'>
-                  <button className='delete-icon absolute top-0 right-0 p-5'>
-                    <Close />
-                  </button>
-                  <figure className='thumbnail'>
-                    <label
-                      htmlFor='replacement'
-                      className='block'
-                      onClick={console.log}
-                    >
-                      <img
-                        src='https://d21jok9tqndbay.cloudfront.net/property-img-b3d7r71w4tlm6hykx6'
-                        alt='THUMBNAIL'
-                        className='thumbnail__img block h-52 w-full'
-                      />
-                    </label>
-
-                    <div className='thumbnail__meta py-2 px-5 flex justify-between text-sm'>
-                      <span className='thumbnail__meta__size'>5mb</span>
-                      <span className='thumbnail__meta__size'>HD</span>
-                    </div>
-                  </figure>
-                </div>
-              </div>
-            </SwiperSlide>
-          </Swiper>
+          {uploadedFiles.length && (
+            <ImagePreviews
+              {...{ onDelete, onReplace }}
+              images={uploadedFiles}
+            />
+          )}
         </div>
       </div>
 

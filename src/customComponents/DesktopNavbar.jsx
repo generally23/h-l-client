@@ -17,20 +17,20 @@ function DesktopNavbar() {
           scrollButtons
           aria-label='scrollable prevent tabs example'
         >
-          {/* Create */}
-          <Tab
-            label={
-              <div className='navigation__desktop__navbar__links__item'>
-                <Link to='/create'>Create</Link>
-              </div>
-            }
-          />
-
           {/* Home */}
           <Tab
             label={
               <div className='navigation__desktop__navbar__links__item'>
                 <Link to='/'>Home</Link>
+              </div>
+            }
+          />
+
+          {/* Create */}
+          <Tab
+            label={
+              <div className='navigation__desktop__navbar__links__item'>
+                <Link to='/create'>Create</Link>
               </div>
             }
           />

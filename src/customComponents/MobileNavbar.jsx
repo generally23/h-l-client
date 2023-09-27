@@ -62,30 +62,30 @@ const AuthNavbar = ({ account, onToggleMenu }) => {
       <ul className='navbar__links bg-slate-300 text-center capitalize py-5'>
         <li className='navbar__links__item'>
           <Link className='p-2 block' to='/' onClick={onToggleMenu}>
-            Page d'acceuil
+            Acceuil
           </Link>
         </li>
         <li className='navbar__links__item'>
-          <Link className='p-2 block' to='/create'>
+          <Link className='p-2 block' to='/create' onClick={onToggleMenu}>
             Create
           </Link>
         </li>
         <li className='navbar__links__item'>
-          <Link className='p-2 block' to='/my-account'>
+          <Link className='p-2 block' to='/my-account' onClick={onToggleMenu}>
             Mon compte
           </Link>
         </li>
         <li className='navbar__links__item'>
-          <Link className='p-2 block' to='/signout'>
+          <Link className='p-2 block' to='/signout' onClick={onToggleMenu}>
             Me deconnecter
           </Link>
         </li>
-        <li className='navbar__links__item'>
+        <li className='navbar__links__item' onClick={onToggleMenu}>
           <Link className='p-2 block' to=''>
             A propos
           </Link>
         </li>
-        <li className='navbar__links__item'>
+        <li className='navbar__links__item' onClick={onToggleMenu}>
           <Link className='p-2 block' to=''>
             Ressources
           </Link>

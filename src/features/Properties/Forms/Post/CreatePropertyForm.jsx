@@ -25,7 +25,7 @@ function CreatePropertyForm({ type }) {
 
   return (
     <form
-      className='property-form p-6 md:p-10 bg-neutral-100 mx-5 md:mx-10 rounded-md drop-shadow-lg'
+      className='property-form p-6 md:p-10 bg-neutral-100 m-10 md:m-20 rounded-md drop-shadow-lg'
       onSubmit={handleSubmit}
     >
       {/* Basic */}
