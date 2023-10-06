@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { verifyMyAccount } from '../features/Auth/accountsSlice';
 
 function VerifyAccount() {
-  const { verficationCode } = useParams();
+  const { verificationCode } = useParams();
 
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -26,7 +26,7 @@ function VerifyAccount() {
     if (!account && error) redirect('/signin');
 
     if (account && account.verified) {
-      setErrorMsg('Votre compte est deja verifiez');
+      setErrorMsg('Votre compte est déja verifié');
       setTimeout(() => {
         redirect('/');
       }, 3000);
@@ -35,19 +35,19 @@ function VerifyAccount() {
     if (account && !account.verified) {
       dispatch(
         verifyMyAccount({
-          url: `http://localhost:9090/api/v1/accounts/verify/${verficationCode}`,
+          url: `http://localhost:9090/api/v1/accounts/verify/${verificationCode}`,
         })
       );
     }
   }, [account, error]);
 
-  console.log(verficationCode);
+  console.log(verificationCode);
   return (
-    <>
+    <main className='main'>
       {loading && 'Verifying you...'}
       {successMsg && <SuccessAlert message={successMsg} />}
       {errorMsg && <ErrorAlert message={errorMsg} />}
-    </>
+    </main>
   );
 }
 

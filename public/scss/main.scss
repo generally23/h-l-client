@@ -10,6 +10,11 @@ video {
   max-width: 100%;
 }
 
+html,
+body {
+  height: 100%;
+}
+
 // forms
 .signup-form,
 .signin-form,
@@ -54,6 +59,12 @@ video {
     text-align: center;
   }
 
+  &__title {
+    background: #eee;
+    text-transform: capitalize;
+    padding: 0.5rem;
+  }
+
   &__share {
     &__fallback {
       box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.25);
@@ -86,18 +97,18 @@ video {
   }
 
   // property filtering
-  &__filter {
-    &__box {
+  .filter {
+    &__container {
       position: fixed;
-      overflow-y: scroll;
+      overflow: hidden;
       top: 0;
       left: 0;
       z-index: 100;
-      width: 100vw;
+      width: 100%;
       height: 0;
-      transition: 1s;
+      transition: 0.5s;
       &--open {
-        height: 100vh;
+        height: 100%;
       }
     }
   }
@@ -146,6 +157,7 @@ video {
 }
 
 .header {
+  //height: 5rem;
   .logo {
   }
 
@@ -162,6 +174,10 @@ video {
     &__desktop {
     }
   }
+}
+
+.main {
+  min-height: 100vh;
 }
 
 .footer {

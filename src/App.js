@@ -1,4 +1,10 @@
-import { Route, Routes } from 'react-router-dom';
+import {
+  Route,
+  RouterProvider,
+  Routes,
+  createBrowserRouter,
+  useLocation,
+} from 'react-router-dom';
 import { useEffect } from 'react';
 import Signup from './pages/Signup';
 import Signin from './pages/Signin';
@@ -18,14 +24,17 @@ import Logout from './pages/Logout';
 import { useDispatch } from 'react-redux';
 import Footer from './customComponents/Footer';
 import Header from './customComponents/Header';
+import UpdateProperty from './pages/UpdateProperty';
 
 function App() {
   // delete auth status make sure user authenticate
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
 
   useEffect(() => {
     dispatch(authenticate());
-  });
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   return (
     <div className='App' id='app'>
@@ -47,6 +56,8 @@ function App() {
           <Route path=':propertyId' element={<PropertyDetail />} />
           {/* Create new Property Form */}
           <Route path='create' element={<CreateProperty />} />
+          {/* Update Property */}
+          <Route path=':propertyId/update' element={<UpdateProperty />} />
 
           {/* Auth Routes */}
 
@@ -70,7 +81,7 @@ function App() {
 
           {/* Verify */}
           <Route
-            path='verify/:verficationCode'
+            path='verify/:verificationCode'
             element={<VerifyAccount />}
           ></Route>
 

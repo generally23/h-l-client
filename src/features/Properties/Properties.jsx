@@ -13,12 +13,13 @@ function Properties() {
   const propertiesList = properties?.docs || [];
 
   const propertiesJsx = propertiesList.map(property => (
-    <Property key={property.id} {...property} />
+    <Property key={property.id} property={property} />
   ));
 
   return (
     <>
-      {propertiesList.length ? <ControlForm></ControlForm> : null}
+      {/* {propertiesList.length ? <ControlForm></ControlForm> : null} */}
+      <ControlForm></ControlForm>
       <Grid container spacing={4} sx={{ flexGrow: 1 }}>
         {loading ? <PropertySkeleton /> : propertiesJsx}
       </Grid>

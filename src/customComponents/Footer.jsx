@@ -64,6 +64,9 @@ const Footer = () => {
         <Link to='/' className='footer__navigation__link'>
           Acceuil
         </Link>
+        <Link to='/create' className='footer__navigation__link'>
+          Create
+        </Link>
         {account ? <AuthNavbar /> : <NoAuthNavbar />}
         <Link to='/' className='footer__navigation__link'>
           A propos
@@ -77,9 +80,9 @@ const Footer = () => {
       </nav>
 
       {/* Contacts and Social Media (marketing) */}
-      <div className='footer__marketing md:flex md:justify-center mb-10'>
+      <div className='footer__marketing md:flex md:justify-evenly mb-10'>
         {/* Promotions */}
-        <div className='promotion md:mr-32 mb-5'>
+        <div className='promotion mb-5 md:mb-0'>
           {/* Callout */}
           <div
             className='
@@ -138,14 +141,14 @@ const Footer = () => {
                 <span className='mr-2'>
                   <Phone fontSize='small' />
                 </span>
-                628 04-36-29
+                +224 628-04-36-29
               </li>
 
               <li className='contact__contacts__number'>
                 <span className='mr-2'>
                   <Phone fontSize='small' />
                 </span>
-                660 34-54-10
+                +224 660-34-54-10
               </li>
             </ul>
 
@@ -162,7 +165,8 @@ const Footer = () => {
               <span className='mr-2'>
                 <Place fontSize='small' />
               </span>
-              Addresse: Bambeto Magasin
+              Addresse:{' '}
+              <address className='inline-block'>Bambeto Magasin</address>
             </div>
           </div>
         </div>
@@ -170,7 +174,7 @@ const Footer = () => {
 
       {/* Copyright */}
       <p className='copyright text-center'>
-        <small>&copy; 2023 Balde All rights reserved</small>
+        <small>&copy; Generally 2023 All rights reserved</small>
       </p>
     </footer>
   );

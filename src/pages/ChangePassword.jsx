@@ -9,11 +9,11 @@ function ChangePassword() {
   const [errorMessage, setErrorMessage] = useState('');
 
   return (
-    <>
+    <main className='main'>
       {successMessage && <SuccessAlert message={successMessage} />}
       {errorMessage && <ErrorAlert message={errorMessage} />}
       <ChangePasswordForm {...{ setSuccessMessage, setErrorMessage }} />
-    </>
+    </main>
   );
 }
 

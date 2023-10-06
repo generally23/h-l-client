@@ -8,7 +8,7 @@ function DesktopNavbar() {
   const handleChange = (e, value) => setValue(value);
 
   return (
-    <div className='navigation__desktop hidden sm:block'>
+    <div className='navigation__desktop'>
       <nav className='navigation__desktop__navbar flex justify-end px-10'>
         <Tabs
           value={value}

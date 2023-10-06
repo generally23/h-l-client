@@ -11,12 +11,26 @@ import {
 } from '../../../../../utils/validate';
 
 // 1st step basic step
-function Basic({ currentStep, setCurrentStep }) {
+function Basic({
+  type,
+  currentStep,
+  setCurrentStep,
+  title,
+  price,
+  description,
+  tags,
+  setTitle,
+  setPrice,
+  setDescription,
+  setTags,
+}) {
   // 1st step handlers
   const onTitleChange = e => setTitle(e.target.value);
 
-  const onPriceChange = e =>
-    setPrice(Number(e.target.value.split('.').join('')));
+  const onPriceChange = e => {
+    const newPrice = parseInt(e.target.value.split('.').join('')) || 0;
+    setPrice(newPrice);
+  };
 
   const onDescriptionChange = e => setDescription(e.target.value);
 
@@ -64,17 +78,11 @@ function Basic({ currentStep, setCurrentStep }) {
 
   // Basic Step State
   const [step] = useState(1);
-  const [title, setTitle] = useState('');
-  const [price, setPrice] = useState(0);
-  const [description, setDescription] = useState('');
-  const [tags, setTags] = useState([]);
 
   // errors
   const [titleError, setTitleError] = useState('');
   const [priceError, setPriceError] = useState('');
   const [descriptionError, setDescriptionError] = useState('');
-
-  useEffect(() => console.log(price), [price]);
 
   return (
     <div
@@ -91,7 +99,7 @@ function Basic({ currentStep, setCurrentStep }) {
       <div className='property-form__step__inputs'>
         {/* Type */}
         <div className='property-form__type'>
-          <input type='hidden' name='type' value='house' />
+          <input type='hidden' name='type' value={type} />
         </div>
 
         {/* Title */}
@@ -107,6 +115,7 @@ function Basic({ currentStep, setCurrentStep }) {
             value={title}
             onChange={onTitleChange}
             error={!!titleError}
+            autoFocus
           />
         </div>
 

@@ -1,55 +1,48 @@
-// import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import React, { createRef, useEffect, useState } from 'react';
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 export default function Test({ children }) {
-  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [open, setOpen] = React.useState(false);
 
-  const handleFileChange = e => {
-    const files = Array.from(e.target.files);
-    setSelectedFiles(files);
+  const handleClickOpen = () => {
+    setOpen(true);
   };
 
-  const handleUpload = () => {
-    // You can upload the selectedFiles to your server here
-    // For demonstration purposes, we'll just log the file names
-    selectedFiles.forEach(file => {
-      console.log('Uploading:', file.name);
-    });
+  const handleClose = () => {
+    setOpen(false);
   };
-
-  const ref = createRef();
-
-  useEffect(() => {
-    // ref.current.play();
-  }, []);
 
   return (
-    <>
-      <div class='links'>
-        <div class='link'>Home</div>
-        <div class='link'>Signup</div>
-        <div class='link'>Signin</div>
-        <div class='link'>Help</div>
-        <div class='link'>About</div>
-        <div class='link'>Ressources</div>
-      </div>
-    </>
-    // <form onSubmit={e => e.preventDefault()}>
-    //   <input name='images' type='file' multiple onChange={handleFileChange} />
-    //   <button onClick={handleUpload}>Upload</button>
-
-    //   <audio ref={ref} src='/successAlert.mp3' autoPlay></audio>
-
-    //   {/* Display selected file names */}
-    //   <div>
-    //     <h2>Selected Files:</h2>
-    //     <ul>
-    //       {selectedFiles.map((file, index) => (
-    //         <li key={index}>{file.name}</li>
-    //       ))}
-    //     </ul>
-    //   </div>
-    // </form>
+    <main className='main'>
+      <Button variant='outlined' onClick={handleClickOpen}>
+        Delete
+      </Button>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle id='alert-dialog-title'>
+          {"Use Google's location service?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id='alert-dialog-description'>
+            Let Google help apps determine location. This means sending
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={handleClose} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </main>
   );
 }

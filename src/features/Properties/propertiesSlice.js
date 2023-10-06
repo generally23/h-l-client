@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchData } from '../../utils/crud';
+import { fetchData, postData } from '../../utils/crud';
+import axios from 'axios';
 
 const initialState = {
   loading: true,

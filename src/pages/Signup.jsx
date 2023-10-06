@@ -23,7 +23,7 @@ function Signup() {
   );
 
   return (
-    <>
+    <main className='main'>
       {successMessage && <SuccessAlert message={successMessage} />}
       {errorMessage && <ErrorAlert message={errorMessage} />}
       {!account && (
@@ -37,7 +37,7 @@ function Signup() {
         </div>
       )}
       {form}
-    </>
+    </main>
   );
 }
 

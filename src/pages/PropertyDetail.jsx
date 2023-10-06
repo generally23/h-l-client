@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import {
-  fetchProperty,
-  selectProperty,
-} from '../features/Properties/propertySlice';
+import { selectProperty } from '../features/Properties/propertySlice';
 import { CustomTabPanel } from '../customComponents/CustomTab';
 import LightGallery from 'lightgallery/react';
 import { formatMoney, formatSrset } from '../utils';
@@ -21,6 +18,7 @@ import lgZoom from 'lightgallery/plugins/zoom';
 import ColorTabs from '../customComponents/CustomTab';
 import { selectProperties } from '../features/Properties/propertiesSlice';
 import ErrorAlert from '../customComponents/ErrorAlert';
+import useExistOrFetch from '../hooks/useExistOrFetch';
 
 function Property({ property }) {
   const [photoRevealed, setPhotoRevealed] = useState(false);
@@ -178,37 +176,22 @@ function Property({ property }) {
 function PropertyDetail() {
   const { propertyId } = useParams();
 
-  const dispatch = useDispatch();
-
   const { property, loading, error } = useSelector(selectProperty);
 
+  // properties stored in my redux store
   const properties = useSelector(selectProperties).properties?.docs || [];
 
+  // trying to find the property in my redux store before fetching to increase performance
   const localProperty = properties.find(property => property.id === propertyId);
 
-  console.log(localProperty);
-  let [dispatchCount, setDispatchCount] = useState(0);
-
   // only run once
-  useEffect(() => {
-    if (!localProperty && !property && !dispatchCount) {
-      setDispatchCount(dispatchCount + 1);
-      dispatch(
-        fetchProperty({
-          url: `http://192.168.1.196:9090/api/v1/properties/${propertyId}`,
-          //`http://localhost:9090/api/v1/properties/${propertyId}`,
-        })
-      );
-    }
-  });
-
-  console.log(property, error);
+  useExistOrFetch(localProperty, propertyId);
 
   return (
-    <div>
+    <main className='main'>
       {error && <ErrorAlert message={error.message} />}
       {<Property property={localProperty ? localProperty : property} />}
-    </div>
+    </main>
   );
 }
 

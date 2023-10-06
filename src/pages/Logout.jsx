@@ -37,10 +37,10 @@ function Logout() {
     })();
   }, [account, error]);
   return (
-    <>
+    <main className='main'>
       {successMsg && <SuccessAlert message={successMsg} />}
       {errorMsg && <ErrorAlert message={errorMsg} />}
-    </>
+    </main>
   );
 }
 

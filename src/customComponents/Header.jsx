@@ -8,23 +8,19 @@ function Header() {
   const { account } = useSelector(state => state.authentication);
 
   // >= 600
-  const isLargeDevice = useMediaQuery('(min-width:600px)');
+  const isLargeDevice = useMediaQuery('(min-width: 600px)');
 
-  console.log(isLargeDevice);
+  console.log('Is Large device: ', isLargeDevice);
 
   console.log(account);
 
   return (
-    <header className='header mb-10 h-16 bg-red-400 flex overflow-hidden'>
+    <header className='header h-16 bg-red-400 flex overflow-hidden'>
       <div className='logo w-28'></div>
       <div className='navigation grow relative'>
         {/* Mobile */}
         {/* Desktop */}
-        {!isLargeDevice ? (
-          <MobileNavbar account={account} />
-        ) : (
-          <DesktopNavbar />
-        )}
+        {isLargeDevice ? <DesktopNavbar /> : <MobileNavbar account={account} />}
       </div>
     </header>
   );

@@ -13,7 +13,7 @@ const BathroomInput = ({
   return (
     <>
       {/* External */}
-      <div className='property-form__bathroom__input grow'>
+      <div className='property-form__bathroom__input grow mr-5'>
         <TextField
           id='externalBathrooms'
           label='Douches Externes'
@@ -21,7 +21,6 @@ const BathroomInput = ({
           value={externalBathrooms}
           onChange={onBathroomChange(setExternalBathrooms)}
           type='number'
-          //helperText='Une maison peut avoir des douches externes'
           InputProps={{ inputProps: { min: 0 } }}
           required
           fullWidth
@@ -36,7 +35,6 @@ const BathroomInput = ({
           value={internalBathrooms}
           onChange={onBathroomChange(setInternalBathrooms)}
           type='number'
-          //helperText='Une maison doit avoir des douches internes'
           InputProps={{ inputProps: { min: 0 } }}
           required
           fullWidth
@@ -46,27 +44,30 @@ const BathroomInput = ({
   );
 };
 
-function Interior({ currentStep, onPrevStep, setCurrentStep }) {
-  const [step] = useState(3);
-
-  // checkbox
-  const [hasBathroom, setHasBathroom] = useState(false);
-  const [hasGarage, setHasGarage] = useState(false);
-  const [hasCuisine, sethasCuisine] = useState(false);
-  const [hasLivingRoom, setHasLivingRoom] = useState(false);
-  const [hasDiningRoom, setHasDiningRoom] = useState(false);
-
-  // values
-  const [rooms, setRooms] = useState(1);
-  const [cuisine, setCuisine] = useState(0);
-  const [garages, setGarages] = useState(0);
-  const [livingRooms, setLivingRooms] = useState(0);
-  const [diningRooms, setDiningRooms] = useState(0);
-  const [externalBathrooms, setExternalBathrooms] = useState(0);
-  const [internalBathrooms, setInternalBathrooms] = useState(0);
-
+function Interior({
+  currentStep,
+  onPrevStep,
+  setCurrentStep,
+  hasBathroom,
+  setHasBathroom,
+  hasGarage,
+  setHasGarage,
+  hasCuisine,
+  sethasCuisine,
+  hasLivingRoom,
+  setHasLivingRoom,
+  hasDiningRoom,
+  setHasDiningRoom,
+  hasPool,
+  setHasPool,
+  rooms,
+  setRooms,
+  externalBathrooms,
+  setExternalBathrooms,
+  internalBathrooms,
+  setInternalBathrooms,
+}) {
   // Checkbox handlers
-
   const onCheckboxChange = (setter, value) => e => setter(!value);
 
   // text input with (e.target.value) handlers
@@ -75,6 +76,9 @@ function Interior({ currentStep, onPrevStep, setCurrentStep }) {
   const onNextStep = e => {
     setCurrentStep(currentStep + 1);
   };
+
+  // State
+  const [step] = useState(3);
 
   return (
     <div
@@ -90,10 +94,11 @@ function Interior({ currentStep, onPrevStep, setCurrentStep }) {
 
       <div className='property__form__step__inputs'>
         {/* Rooms */}
-        <div className='property-form__rooms'>
+        <div className='property-form__rooms mb-10'>
           <TextField
             id='rooms'
             label='Chambres'
+            name='rooms'
             type='number'
             value={rooms}
             onChange={onTextChange(setRooms)}
@@ -128,7 +133,7 @@ function Interior({ currentStep, onPrevStep, setCurrentStep }) {
           )}
         </div>
 
-        {/* Garages */}
+        {/* Garage */}
         <div className='property-form__garage flex'>
           <div className='property-form__garage__checkbox'>
             <FormControlLabel
@@ -136,10 +141,12 @@ function Interior({ currentStep, onPrevStep, setCurrentStep }) {
               label='Garage'
               onChange={onCheckboxChange(setHasGarage, hasGarage)}
               checked={hasGarage}
+              name='hasGarage'
+              value={hasGarage}
             />
           </div>
 
-          {hasGarage && (
+          {/* {hasGarage && (
             <div className='property-form__garage__input grow'>
               <TextField
                 id='garages'
@@ -155,10 +162,10 @@ function Interior({ currentStep, onPrevStep, setCurrentStep }) {
                 fullWidth
               />
             </div>
-          )}
+          )} */}
         </div>
 
-        {/* Living Rooms */}
+        {/* Living Room */}
         <div className='property-form__living-room flex'>
           <div className='property-form__living-room__checkbox'>
             <FormControlLabel
@@ -166,10 +173,12 @@ function Interior({ currentStep, onPrevStep, setCurrentStep }) {
               label='Salon'
               onChange={onCheckboxChange(setHasLivingRoom, hasLivingRoom)}
               checked={hasLivingRoom}
+              name='hasLivingRoom'
+              value={hasLivingRoom}
             />
           </div>
 
-          {hasLivingRoom && (
+          {/* {hasLivingRoom && (
             <div className='property-form__living-room__input grow'>
               <TextField
                 id='livingRooms'
@@ -185,7 +194,7 @@ function Interior({ currentStep, onPrevStep, setCurrentStep }) {
                 fullWidth
               />
             </div>
-          )}
+          )} */}
         </div>
 
         {/* Dining Rooms */}
@@ -194,13 +203,14 @@ function Interior({ currentStep, onPrevStep, setCurrentStep }) {
             <FormControlLabel
               control={<Checkbox />}
               label='Sale a manger'
+              name='hasDingRoom'
               value={hasDiningRoom}
               onChange={onCheckboxChange(setHasDiningRoom, hasDiningRoom)}
               checked={hasDiningRoom}
             />
           </div>
 
-          {hasDiningRoom && (
+          {/* {hasDiningRoom && (
             <div className='property-form__dining-room__input grow'>
               <TextField
                 id='diningRooms'
@@ -216,7 +226,7 @@ function Interior({ currentStep, onPrevStep, setCurrentStep }) {
                 fullWidth
               />
             </div>
-          )}
+          )} */}
         </div>
 
         {/* Cuisine */}
@@ -225,12 +235,14 @@ function Interior({ currentStep, onPrevStep, setCurrentStep }) {
             <FormControlLabel
               control={<Checkbox />}
               label='Cuisine'
+              name='hasCuisine'
+              value={hasCuisine}
               onChange={onCheckboxChange(sethasCuisine, hasCuisine)}
               checked={hasCuisine}
             />
           </div>
 
-          {hasCuisine && (
+          {/* {hasCuisine && (
             <div className='property-form__cuisine__input grow'>
               <TextField
                 id='cuisine'
@@ -245,7 +257,21 @@ function Interior({ currentStep, onPrevStep, setCurrentStep }) {
                 fullWidth
               />
             </div>
-          )}
+          )} */}
+        </div>
+
+        {/* Pool */}
+        <div className='property-form__pool flex'>
+          <div className='property-form__pool__checkbox'>
+            <FormControlLabel
+              control={<Checkbox />}
+              label='Piscine'
+              name='hasPool'
+              value={hasPool}
+              onChange={onCheckboxChange(setHasPool, hasPool)}
+              checked={hasPool}
+            />
+          </div>
         </div>
       </div>
 

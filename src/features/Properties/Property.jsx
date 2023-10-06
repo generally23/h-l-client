@@ -16,19 +16,130 @@ import {
 import PropertyCardDetail from './PropertyCardDetail';
 import SimpleCarousel from '../../customComponents/SimpleCarousel';
 
-const Property = ({
-  images,
-  imagesNames,
-  id,
-  title,
-  price,
-  yearBuilt,
-  owner,
-  dimension,
-  tags,
-  type,
-  status,
-}) => {
+export const PropertyPreview = ({ property }) => {
+  const { title, price, images = [], tags, owner, id } = property;
+
+  const thumbnails = images.map(img => ({
+    src: URL.createObjectURL(img),
+    srcset: [],
+  }));
+
+  return (
+    <div className='property'>
+      {/* Thumbnail */}
+      <Carousel showThumbs={false}>
+        {thumbnails.map(({ src, srcset }) => (
+          <PropertyThumbnail
+            key={src}
+            src={src}
+            srcSet={srcset}
+            propertyId={id}
+          />
+        ))}
+      </Carousel>
+
+      {/* Price */}
+      <Price price={price} />
+
+      {/* Title */}
+      <Title title={title} id={id} />
+
+      {/* Description */}
+      <p className='property__description p-5'>
+        {property.story && property.story}
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum quis
+      </p>
+
+      {/* Details */}
+      <PropertyCardDetail property={property} />
+
+      {/* Tags */}
+      <Tags tags={tags} />
+
+      {/* Owner */}
+      <Owner {...owner} />
+    </div>
+  );
+};
+
+// const Thumbnail = () => {
+//   {
+//     /* Property Thumbnail */
+//   }
+//   return (
+//     <div className='property__thumbnail select-none relative overflow-hidden'>
+//       <Carousel showThumbs={false}>
+//         {imageThumbnails}
+//         <PropertyThumbnail {...replica} isReplica propertyId={id} />
+//       </Carousel>
+//     </div>
+//   );
+// };
+
+/* Property Price */
+
+const Price = ({ price }) => {
+  return (
+    <h1 className='property__price px-3 py-2 text-2xl font-bold tracking-wider'>
+      {formatMoney(price)} FG
+    </h1>
+  );
+};
+
+// Title
+
+const Title = ({ title, id }) => {
+  return (
+    <h1 className='property__title px-3 text-lg'>
+      <Link className='inline-block text-blue-500' to={`/${id}`}>
+        {title}
+      </Link>
+    </h1>
+  );
+};
+
+// Tags
+
+const Tags = ({ tags }) => {
+  return (
+    tags && (
+      <div className='property__tags bg-neutral-100'>
+        <SimpleCarousel>
+          <ul className='property__tags__list flex'>
+            {tags.split(' ').map(tag => (
+              <li
+                key={tag}
+                className='inline-block bg-green-400/70 [&:not(:last-child)]:mr-3 px-2 py-1'
+              >
+                #{tag}
+              </li>
+            ))}
+          </ul>
+        </SimpleCarousel>
+      </div>
+    )
+  );
+};
+
+// Owner
+const Owner = ({ firstname }) => {
+  return (
+    <div className='property__owner text-center p-5'>
+      <figure className='property__owner__avatar mb-3'>
+        <img
+          src='http://localhost:9090/assets/images/avatar.avif'
+          crossOrigin='true'
+          alt='Avatar'
+          className='property__owner__avatar__image inline-block w-16 h-16'
+          style={{ borderRadius: '100%' }}
+        />
+      </figure>
+      <div className='property__owner__name capitalize'>{firstname}</div>
+    </div>
+  );
+};
+
+const Property = ({ property }) => {
   // if navigator does not support share api implement fall back
   const onShare = async e => {
     try {
@@ -36,7 +147,7 @@ const Property = ({
         return await navigator.share({
           url: propertyUrl,
           title: 'Checkout this property',
-          text: 'Checkout this property',
+          text: 'Check%20out%20this%20cool%20website%21',
         });
       }
 
@@ -45,6 +156,8 @@ const Property = ({
       console.log('Caught', e);
     }
   };
+
+  const { title, price, images, tags, owner, id } = property;
 
   // share urls
   const propertyUrl = `http://localhost:3000/${id}`;
@@ -57,13 +170,11 @@ const Property = ({
   const maxImages = images.length > 5 ? 5 : images.length;
   // thumbnails, +1 to inlcude item at that position
   const thumbnails = images.slice(0, maxImages);
-  // thumbnail names
-  const thumbnailNames = imagesNames.slice(0, maxImages);
+
   // replica
   const replica = thumbnails[thumbnails.length - 1];
 
-  const imageThumbnails = thumbnails.map(({ src, srcset }, index) => {
-    const imageName = thumbnailNames[index];
+  const imageThumbnails = thumbnails.map(({ src, srcset }) => {
     return (
       <PropertyThumbnail key={src} src={src} srcSet={srcset} propertyId={id} />
     );
@@ -74,6 +185,7 @@ const Property = ({
   return (
     <Grid xs={12} sm={6} lg={4} item>
       <div className='property'>
+        {/* Property Thumbnail */}
         <div className='property__thumbnail select-none relative overflow-hidden'>
           <Carousel showThumbs={false}>
             {imageThumbnails}
@@ -81,50 +193,22 @@ const Property = ({
           </Carousel>
         </div>
 
-        <h1 className='property__price px-3 py-2 text-2xl font-bold tracking-wider'>
-          {formatMoney(price)} FG
-        </h1>
+        {/* Price */}
+        <Price price={price} />
 
-        {/* <h1 className='property__title px-3 text-lg'>
-          <Link className='inline-block text-blue-500' to={`/${id}`}>
-            {title}
-          </Link>
-        </h1> */}
+        {/* Property Title id used to make a link */}
+        <Title {...{ title, id }} />
 
-        <PropertyCardDetail {...{ dimension, yearBuilt, type, status }} />
+        {/* Property Details */}
+        <PropertyCardDetail property={property} />
 
-        {tags && (
-          <div className='property__tags bg-neutral-100'>
-            <SimpleCarousel>
-              <ul className='property__tags__list flex'>
-                {tags.split(' ').map(tag => (
-                  <li
-                    key={tag}
-                    className='inline-block bg-green-400/70 [&:not(:last-child)]:mr-3 px-2 py-1'
-                  >
-                    {tag}
-                  </li>
-                ))}
-              </ul>
-            </SimpleCarousel>
-          </div>
-        )}
+        {/* Property Tags */}
+        <Tags tags={tags} />
 
-        <div className='property__owner text-center p-5'>
-          <figure className='property__owner__avatar mb-3'>
-            <img
-              src='http://localhost:9090/assets/images/avatar.avif'
-              crossOrigin='true'
-              alt='Avatar'
-              className='property__owner__avatar__image inline-block w-16 h-16'
-              style={{ borderRadius: '100%' }}
-            />
-          </figure>
-          <div className='property__owner__name capitalize'>
-            {owner.firstname}
-          </div>
-        </div>
+        {/* Property Owner */}
+        <Owner {...owner} />
 
+        {/* Property Footer Extra Data */}
         <div className='property__extras p-5'>
           <div className='property__share relative'>
             <div className='mb-4'>

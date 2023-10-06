@@ -9,29 +9,39 @@ import {
   TextField,
 } from '@mui/material';
 import Button from '../../../../../customComponents/Button';
-import { formatMoney } from '../../../../../utils';
 import {
   isValidArea,
   isValidYearBuilt,
   validateFields,
 } from '../../../../../utils/validate';
 
-function Area({ currentStep, onPrevStep, setCurrentStep, type }) {
+function Area({
+  type,
+  currentStep,
+  onPrevStep,
+  setCurrentStep,
+  area,
+  setArea,
+  areaBuilt,
+  setAreaBuilt,
+  yearBuilt,
+  setYearBuilt,
+  fenced,
+  setFenced,
+}) {
   // 2nd step handlers
   const onAreaChange = e => {
-    // parse new area to be a number since input is formatted to facilitate readability
-    const newArea = parseInt(e.target.value.split('.').join('')) || 0;
+    const newArea = parseInt(e.target.value) || 0;
     // change area
     setArea(newArea);
     // area and area built are the same unless area built is specifically set
     setAreaBuilt(newArea);
   };
-  const onAreaBuiltChange = e => {
-    // parse new area to be a number since input is formatted to facilitate readability
-    const newArea = parseInt(e.target.value.split('.').join('')) || 0;
-    setAreaBuilt(newArea);
+  const onAreaBuiltChange = e => parseInt(setAreaBuilt(e.target.value) || 0);
+
+  const onYearBuiltChange = dateObject => {
+    setYearBuilt(dateObject);
   };
-  const onYearBuiltChange = dateObject => setYearBuilt(dateObject);
   const onFencedChange = e => setFenced(!fenced);
 
   const onNextStep = e => {
@@ -58,6 +68,8 @@ function Area({ currentStep, onPrevStep, setCurrentStep, type }) {
       setError: setAreaBuiltError,
     };
 
+    console.log(yearBuilt);
+
     const yearBuiltField = {
       value: yearBuilt.$y,
       validators: [
@@ -78,12 +90,8 @@ function Area({ currentStep, onPrevStep, setCurrentStep, type }) {
   };
 
   const [step] = useState(2);
-  // Area Step State
-  const [area, setArea] = useState(0);
-  const [areaBuilt, setAreaBuilt] = useState(0);
-  const [yearBuilt, setYearBuilt] = useState(dayjs(new Date()));
-  const [fenced, setFenced] = useState(false);
 
+  // Errors
   const [areaError, setAreaError] = useState('');
   const [areaBuiltError, setAreaBuiltError] = useState('');
   const [yearBuiltError, setYearBuiltError] = useState('');
@@ -101,7 +109,7 @@ function Area({ currentStep, onPrevStep, setCurrentStep, type }) {
           <TextField
             id='area'
             name='area'
-            value={formatMoney(area)}
+            value={area}
             onChange={onAreaChange}
             label='Superficie'
             required
@@ -120,11 +128,11 @@ function Area({ currentStep, onPrevStep, setCurrentStep, type }) {
 
         {/* Area Built */}
         {type === 'house' && (
-          <div className='property-form__area-built'>
+          <div className='property-form__area-built mb-10'>
             <TextField
               id='area-built'
               name='areaBuilt'
-              value={formatMoney(areaBuilt)}
+              value={areaBuilt}
               onChange={onAreaBuiltChange}
               label='Superficie Batie'
               fullWidth
@@ -145,9 +153,13 @@ function Area({ currentStep, onPrevStep, setCurrentStep, type }) {
         {/* Year Built */}
         {type === 'house' && (
           <div className='property-form__built-year mb-10'>
+            {/* custom hidden input to replace date picker's since it has no name */}
+            <input type='hidden' name='yearBuilt' value={dayjs(yearBuilt).$y} />
+            {/* Date Picker */}
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 disableFuture
+                key='yearBuilt'
                 value={yearBuilt}
                 onChange={onYearBuiltChange}
                 views={['year']}
@@ -166,7 +178,9 @@ function Area({ currentStep, onPrevStep, setCurrentStep, type }) {
         <div className='property-form__fenced flex mb-10'>
           <div className='property-form__fenced__checkbox'>
             <FormControlLabel
+              name='fenced'
               value={fenced}
+              checked={fenced}
               onChange={onFencedChange}
               control={<Checkbox />}
               label='Cloturé'

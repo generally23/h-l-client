@@ -1,48 +1,152 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Basic from './Steps/Basic';
 import Area from './Steps/Area';
 import Interior from './Steps/Interior';
 import Images from './Steps/Images';
 import Location from './Steps/Location';
+import Preview from './Steps/Preview';
+import { addPropertyImages, createProperty } from '../../myPropertiesSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { usePropertyForm } from '../../../../hooks/usePropertyForm';
+import { selectFromObject, formDataToObject } from '../../../../utils';
 
 function CreatePropertyForm({ type }) {
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
+    // stop default behavior
     e.preventDefault();
 
-    const form = e.target;
+    const {
+      title,
+      price,
+      description,
+      tags,
+      area,
+      areaBuilt,
+      yearBuilt,
+      fenced,
+      hasBathroom,
+      hasGarage,
+      hasCuisine,
+      hasLivingRoom,
+      hasDiningRoom,
+      hasPool,
+      rooms,
+      externalBathrooms,
+      internalBathrooms,
+      address,
+      uploadedFiles: images,
+    } = inputs;
 
-    const formData = new FormData(form);
+    // build location object
+    const location = {
+      coordinates: [longitude, latitude],
+    };
+
+    // create property object
+    const propertyData = {
+      type,
+      title,
+      price,
+      description,
+      // tags is an array join all values
+      tags: tags.join(' '),
+      area,
+      areaBuilt,
+      // make sure to get the number since year built is an object
+      yearBuilt: yearBuilt.$y,
+      fenced,
+      hasBathroom,
+      hasGarage,
+      hasCuisine,
+      hasLivingRoom,
+      hasDiningRoom,
+      hasPool,
+      rooms,
+      externalBathrooms,
+      internalBathrooms,
+      address,
+      location,
+    };
+
+    console.log(propertyData);
+
+    // send data to server to create a new property
+    const { payload: property } = await dispatch(createProperty(propertyData));
+
+    console.log(property);
+
+    // upload images to server after property is created
+    const imagesformData = new FormData();
+    images.forEach(image => imagesformData.append('images', image));
+
+    dispatch(
+      addPropertyImages({
+        url: `http://localhost:9090/api/v1/properties/${property.id}/images`,
+        data: imagesformData,
+      })
+    );
   };
 
   const onPrevStep = e => {
     setCurrentStep(currentStep - 1);
   };
 
-  // these are static, does not change
+  const onLocationSuccess = ({ coords }) => {
+    setLongitude(coords.longitude);
+    setLatitude(coords.latitude);
+  };
+  const onLocationError = error => {
+    setErrMsg('Please provide your GPS Location');
+  };
+
+  // const { account } = useSelector(state => state.authentication);
+
   const [currentStep, setCurrentStep] = useState(1);
-  // const [firstStep] = useState(1);
-  // const [lastStep] = useState(type === 'land' ? 4 : 5);
+
+  const dispatch = useDispatch();
+
+  /*  use this structure to create something like
+      property = { location: { type: 'Point', coordinates: [ long, lat ] } }
+  */
+
+  const inputs = usePropertyForm();
+
+  const [longitude, setLongitude] = useState(null);
+  const [latitude, setLatitude] = useState(null);
+
+  const [errMsg, setErrMsg] = useState('');
+
+  useEffect(() => {
+    // try to get user's location
+    navigator.geolocation.getCurrentPosition(
+      onLocationSuccess,
+      onLocationError
+    );
+  });
 
   return (
     <form
-      className='property-form p-6 md:p-10 bg-neutral-100 m-10 md:m-20 rounded-md drop-shadow-lg'
+      className='property-form p-5 md:p-10 bg-neutral-100 m-5 md:m-20 rounded-md drop-shadow-lg'
       onSubmit={handleSubmit}
     >
       {/* Basic */}
       <Basic
         {...{
+          type,
           currentStep,
           setCurrentStep,
-          type,
+          ...inputs,
         }}
       />
+
       {/* Area */}
       <Area
         {...{
+          type,
           currentStep,
           onPrevStep,
           setCurrentStep,
-          type,
+          ...inputs,
         }}
       />
 
@@ -53,16 +157,41 @@ function CreatePropertyForm({ type }) {
             currentStep,
             onPrevStep,
             setCurrentStep,
-            type,
+            ...inputs,
           }}
         />
       )}
 
       {/* Location */}
-      <Location {...{ currentStep, setCurrentStep, onPrevStep, type }} />
+      <Location
+        {...{
+          type,
+          currentStep,
+          setCurrentStep,
+          onPrevStep,
+          ...inputs,
+        }}
+      />
 
       {/* Images */}
-      <Images {...{ currentStep, setCurrentStep, onPrevStep, type }} />
+      <Images
+        {...{
+          type,
+          currentStep,
+          setCurrentStep,
+          onPrevStep,
+          ...inputs,
+        }}
+      />
+
+      {/* Preview */}
+      <Preview
+        {...{
+          currentStep,
+          onPrevStep,
+          ...inputs,
+        }}
+      />
     </form>
   );
 }

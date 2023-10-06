@@ -33,73 +33,96 @@ function Sorting({ sortBy, onSortChange }) {
           slotProps={{
             root: { className: 'px-5 py-2 hover:bg-neutral-300' },
           }}
-          label='Title [A-Z]'
+          label='Titre (A-Z)'
           value='title'
         >
-          Title [A-Z]
+          Titre (A-Z)
         </Option>
+
         <Option
           slotProps={{ root: { className: 'px-5 py-2 hover:bg-neutral-300' } }}
-          label='Title [Z-A]'
+          label='Titre (Z-A)'
           value='-title'
         >
-          Title [Z-A]
+          Titre (Z-A)
         </Option>
+
+        {/* sort: { price: 1 } means to sort from less than to greater than */}
         <Option
           slotProps={{ root: { className: 'px-5 py-2 hover:bg-neutral-300' } }}
-          label='Price [0-100]'
-          value='price'
-        >
-          Price [0-100]
-        </Option>
-        <Option
-          slotProps={{ root: { className: 'px-5 py-2 hover:bg-neutral-300' } }}
-          label='Price [100- 0]'
+          label='Prix (Plus Chère)'
           value='-price'
         >
-          Price [100- 0]
+          Prix (Plus Chère)
         </Option>
+
+        {/* sort: { price: -1 } means to sort from greater than to less than*/}
         <Option
           slotProps={{ root: { className: 'px-5 py-2 hover:bg-neutral-300' } }}
-          label='Quartier [A-Z]'
-          value='city'
+          label='Prix (Moins Chère)'
+          value='price'
         >
-          Quartier [A-Z]
+          Prix (Moins Chère)
         </Option>
+
         <Option
           slotProps={{ root: { className: 'px-5 py-2 hover:bg-neutral-300' } }}
-          label='Quartier [Z-A]'
-          value='-city'
+          value='rooms'
+          label='Chambres (0-100)'
         >
-          Quartier [Z-A]
+          Chambres (100 - 0)
         </Option>
+
         <Option
           slotProps={{ root: { className: 'px-5 py-2 hover:bg-neutral-300' } }}
-          label='Dimension [0-100]'
-          value='dimension'
+          value='-rooms'
+          label='Chambres (100-0)'
         >
-          Dimension [0-100]
+          Chambres (0 - 100)
         </Option>
+
         <Option
           slotProps={{ root: { className: 'px-5 py-2 hover:bg-neutral-300' } }}
-          label='Dimension [100-0]'
-          value='-dimension'
+          label='Quartier (A-Z)'
+          value='address'
         >
-          Dimension [100-0]
+          Quartier (A-Z)
+        </Option>
+
+        <Option
+          slotProps={{ root: { className: 'px-5 py-2 hover:bg-neutral-300' } }}
+          label='Quartier (Z-A)'
+          value='-address'
+        >
+          Quartier (Z-A)
         </Option>
         <Option
           slotProps={{ root: { className: 'px-5 py-2 hover:bg-neutral-300' } }}
-          label='Date (Newest)'
+          label='Surface (100 - 0)'
+          value='area'
+        >
+          Superficie (100 - 0)
+        </Option>
+        <Option
+          slotProps={{ root: { className: 'px-5 py-2 hover:bg-neutral-300' } }}
+          label='Surface (0 - 100)'
+          value='-area'
+        >
+          Superficie (0 - 100)
+        </Option>
+        <Option
+          slotProps={{ root: { className: 'px-5 py-2 hover:bg-neutral-300' } }}
+          label='Date (Nouveau)'
           value='date'
         >
-          Date (Newest)
+          Date (Nouveau)
         </Option>
         <Option
           slotProps={{ root: { className: 'px-5 py-2 hover:bg-neutral-300' } }}
-          label='Date (Oldest)'
+          label='Date (Ancient)'
           value='-date'
         >
-          Date (Oldest)
+          Date (Ancient)
         </Option>
       </Select>
     </div>

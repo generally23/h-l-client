@@ -102,7 +102,7 @@ function MobileNavbar({ account }) {
   const openNavbarClassNames = `w-full h-full bg-white z-50 px-10 p-10`;
 
   return (
-    <div className='navigation__mobile sm:hidden'>
+    <div className='navigation__mobile'>
       {/* Opener */}
       <button
         className='naviagtion__opener absolute top-1/2 -translate-y-1/2 right-0 p-5 flex align-middle'

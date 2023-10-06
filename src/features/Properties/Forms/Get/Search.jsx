@@ -16,6 +16,7 @@ function Search({ search, onSearchChange, handleSearch }) {
       '
         value={search}
         onChange={onSearchChange}
+        onReset={e => console.log(e)}
       />
 
       <div

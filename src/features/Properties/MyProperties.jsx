@@ -1,18 +1,27 @@
 import React, { useEffect, useState } from 'react';
-// Import Swiper React components
+// Swiper Imports
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
-import { EditSharp, DeleteForever, Public } from '@mui/icons-material';
-
-// Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import { basicSwiperOptions } from '../../utils';
-import { useSelector } from 'react-redux';
-import { selectMyProperties } from './myPropertiesSlice';
 
-const Published = ({ id, images }) => {
+// Material UI Imports
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import { EditSharp, DeleteForever, Public } from '@mui/icons-material';
+import { Alert, Button, CircularProgress } from '@mui/material';
+
+// Local Imports
+import { basicSwiperOptions } from '../../utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteMyProperty, selectMyProperties } from './myPropertiesSlice';
+import { Link } from 'react-router-dom';
+
+const Published = ({ id, images, onDialogueOpen }) => {
   const thumbnail = images[0].src;
   return (
     <div className='bg-gray-200'>
@@ -30,13 +39,22 @@ const Published = ({ id, images }) => {
 
       {/* Action Btns */}
       <div className='account__properties__property__action p-10 text-white'>
-        <button className='block p-2 bg-green-500/90 mb-3 w-full rounded-sm'>
-          <span className='mr-1'>
-            <EditSharp />
-          </span>
-          Modifiez
+        <button
+          className='block p-2 bg-green-500/90 mb-3 w-full rounded-sm'
+          data-property-id={id}
+        >
+          <Link to={`/${id}/update`}>
+            <span className='mr-1'>
+              <EditSharp />
+            </span>
+            Modifiez
+          </Link>
         </button>
-        <button className='block p-2 bg-red-400/90 w-full rounded-sm'>
+        <button
+          className='block p-2 bg-red-400/90 w-full rounded-sm'
+          data-property-id={id}
+          onClick={onDialogueOpen}
+        >
           <span className='mr-1'>
             <DeleteForever />
           </span>
@@ -47,7 +65,7 @@ const Published = ({ id, images }) => {
   );
 };
 
-const UnPublished = ({ id, images }) => {
+const UnPublished = ({ id, images, onDialogueOpen }) => {
   const thumbnail = images[0].src;
 
   return (
@@ -56,10 +74,19 @@ const UnPublished = ({ id, images }) => {
       <div className='account__properties__property__thumbnail relative'>
         {/* Action Btns */}
         <div className='absolute top-3 right-3 text-white'>
-          <button className='btn-edit p-2 mr-2 bg-green-500/50 rounded-md'>
-            <EditSharp fontSize='small' />
+          <button
+            className='btn-edit p-2 mr-2 bg-green-500/50 rounded-md'
+            data-property-id={id}
+          >
+            <Link to={`/${id}/update`}>
+              <EditSharp fontSize='small' />
+            </Link>
           </button>
-          <button className='btn-delete p-2 bg-red-400/40 rounded-md'>
+          <button
+            className='btn-delete p-2 bg-red-400/40 rounded-md'
+            data-property-id={id}
+            onClick={onDialogueOpen}
+          >
             <DeleteForever fontSize='small' />
           </button>
         </div>
@@ -86,12 +113,103 @@ const UnPublished = ({ id, images }) => {
   );
 };
 
+const AcknowledgeDeletion = ({
+  open,
+  onDialogueClose,
+  onDeleteProperty,
+  loading,
+}) => {
+  return (
+    <div>
+      <Dialog
+        open={open}
+        onClose={onDialogueClose}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle id='alert-dialog-title'>
+          {'Supprimer cette propriete'}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id='alert-dialog-description'>
+            Clicker sur supprimer enlevera toute information concernant cette
+            propriete de nos serveur
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onDialogueClose}>Retourner</Button>
+          <Button onClick={onDeleteProperty} autoFocus sx={{ color: 'red' }}>
+            <span className='mr-1'>Supprimer</span>
+            {loading && <CircularProgress size={25} />}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+};
+
 function MyProperties() {
+  const onDeleteProperty = async e => {
+    e.preventDefault();
+    // get btn
+    const btn = e.target.closest('button');
+    // stop
+    if (!btn) return;
+    // send delete request for this property
+    await dispatch(deleteMyProperty(deletedId));
+    // close modal
+    setOpen(false);
+    // show success message
+    setSuccessMsg('Propriete supprimer avec success');
+  };
+
+  // id of property to delete
+  const [deletedId, setDeletedId] = useState('');
+
+  const [open, setOpen] = useState(false);
+
+  const [successMsg, setSuccessMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const onDialogueOpen = e => {
+    e.preventDefault();
+    // get btn
+    const btn = e.target.closest('button');
+    console.log(btn);
+    if (!btn) return;
+    // set id to identify property being removed
+    setDeletedId(btn.dataset.propertyId);
+    // open dialogue to confirm deletion
+    setOpen(true);
+  };
+
+  const onDialogueClose = () => {
+    // reset delete id when modal gets closed
+    setDeletedId('');
+    // close modal
+    setOpen(false);
+  };
+
+  const dispatch = useDispatch();
   //  My properties
   const { loading, properties, error } = useSelector(selectMyProperties);
-  console.log(properties);
+
   return (
     <div className='account__properties' id='my-properties'>
+      {successMsg && (
+        <Alert variant='filled' severity='success'>
+          {successMsg}
+        </Alert>
+      )}
+      {errorMsg && (
+        <Alert variant='filled' severity='success'>
+          {errorMsg}
+        </Alert>
+      )}
+      {/* Acknowlede Property Deletion Modal */}
+      <AcknowledgeDeletion
+        {...{ open, onDeleteProperty, onDialogueClose, deletedId, loading }}
+      />
       <h1 className='account__properties__label text-3xl font-bold mb-10 text-center'>
         Mes Propriétés
       </h1>
@@ -109,9 +227,9 @@ function MyProperties() {
           {properties.map(property => (
             <SwiperSlide key={property.id}>
               {property.published ? (
-                <Published {...{ ...property }} />
+                <Published {...{ ...property, onDialogueOpen }} />
               ) : (
-                <UnPublished {...{ ...property }} />
+                <UnPublished {...{ ...property, onDialogueOpen }} />
               )}
             </SwiperSlide>
           ))}

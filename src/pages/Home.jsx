@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import Properties from '../features/Properties/Properties';
 import { fetchProperties } from '../features/Properties/propertiesSlice';
 import { useDispatch } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
 
 function Home() {
   const onLocationSuccess = ({ coords }) => {
@@ -9,13 +10,18 @@ function Home() {
     const Longitude = coords.longitude;
     dispatch(
       fetchProperties({
+        url: `http://localhost:9090/api/v1/properties?${searchParams.toString()}`,
         headers: { Longitude, Latitude },
       })
     );
   };
   const onLocationError = error => {
     console.error(error);
-    dispatch(fetchProperties('http://localhost:9090/api/v1/properties'));
+    dispatch(
+      fetchProperties({
+        url: `http://localhost:9090/api/v1/properties?${searchParams.toString()}`,
+      })
+    );
   };
 
   useEffect(() => {
@@ -27,12 +33,14 @@ function Home() {
 
   const dispatch = useDispatch();
 
+  const [searchParams] = useSearchParams();
+
+  console.log(searchParams.toString());
+
   return (
-    <>
-      <main className='mx-5 my-8 md:my-12 lg:mx-16'>
-        <Properties />
-      </main>
-    </>
+    <main className='main mx-5 my-8 md:my-12 lg:mx-16'>
+      <Properties />
+    </main>
   );
 }
 

@@ -8,11 +8,11 @@ function ResetPassword() {
   const [errorMessage, setErrorMessage] = useState('');
 
   return (
-    <>
+    <main className='main'>
       {successMessage && <SuccessAlert message={successMessage} />}
       {errorMessage && <ErrorAlert message={errorMessage} />}
       <ResetPasswordForm {...{ setSuccessMessage, setErrorMessage }} />
-    </>
+    </main>
   );
 }
 

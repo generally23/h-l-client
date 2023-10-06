@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 
-import { useLocation, useSearchParams } from 'react-router-dom';
-import { selectProperties } from '../../propertiesSlice';
-import { useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
+import { fetchProperties, selectProperties } from '../../propertiesSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import Paginate from './Paginate';
 import Sort from './Sort';
 import Search from './Search';
 import Filter from './Filter';
+import { assignStrict } from '../../../../utils';
 
 function ControlForm({ children }) {
   const onPageChange = (e, value) => {
@@ -14,10 +15,10 @@ function ControlForm({ children }) {
     const button = e.target.closest('button');
     // if user clicks on the same page btn stop or no button found
     if (!button || page === value) return;
-    // update search params
-    setSearchParams({ page: value, search });
     // update page state
     setPage(value);
+    // update search params
+    setSearchParams({ page: value, search });
     // manually submit form
     button.form.requestSubmit();
   };
@@ -27,13 +28,16 @@ function ControlForm({ children }) {
     setSearch(e.target.value);
   };
 
-  const handleFormSubmit = e => {
+  const handleFormSubmit = async e => {
     e.preventDefault();
 
     console.log('form submitted');
 
-    // console.log(e);
-    // console.log(url);
+    dispatch(
+      fetchProperties({
+        url: `http://localhost:9090/api/v1/properties?${searchParams.toString()}`,
+      })
+    );
 
     console.log(searchParams.toString());
   };
@@ -42,17 +46,21 @@ function ControlForm({ children }) {
     e.preventDefault();
     // makes sure we selected button not svg icons
     const button = e.target.closest('button');
-    // stop if no button found
-    // stop hear if search term hasn't changed
+    // stop if no button found or search term hasn't changed
     if (!button || search === searchParams.get('search')) return;
-    // update search params
-    setSearchParams({ search, page });
-    // manually submit form
-    button.form.requestSubmit();
+    // update search params only if search is not empty
+    if (search) {
+      // update search field
+      searchParams.set('search', search);
+      // override searchParams
+      setSearchParams(searchParams);
+      // manually submit form
+      button.form.requestSubmit();
+    }
   };
 
   const onSortChange = (e, value) => {
-    const form = e?.target.closest('form');
+    const form = e.target.closest('form');
 
     // stop here if form is null || sortBy value hasn't changed
     if (!form || sortBy === value) return;
@@ -61,11 +69,30 @@ function ControlForm({ children }) {
     setSortBy(value);
 
     // update search params
-    setSearchParams({ search, page, sortBy: value });
+
+    searchParams.set('sortBy', value);
+
+    setSearchParams(searchParams);
 
     // submit form
     form.requestSubmit();
   };
+
+  const resetFilters = e => {
+    // list of filter properties to reset
+    const filters = ['type', 'rooms', 'fenced'];
+    // loop through the filters
+    for (let filter of filters) {
+      // delete the filter
+      searchParams.delete(filter);
+    }
+    // update the url
+    setSearchParams(searchParams);
+    // submit the form
+    e.target.form.requestSubmit();
+  };
+
+  const dispatch = useDispatch();
 
   const { properties, loading } = useSelector(selectProperties);
 
@@ -73,11 +100,14 @@ function ControlForm({ children }) {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
-
+  // Search
   const [search, setSearch] = useState(searchParams.get('search') || '');
 
+  // Sort
   const [sortBy, setSortBy] = useState(searchParams.get('sortBy') || '');
+
+  // Paginate
+  const [page, setPage] = useState(parseInt(searchParams.get('page')) || 1);
 
   return (
     <form className='controls mb-10' onSubmit={handleFormSubmit}>
@@ -85,7 +115,7 @@ function ControlForm({ children }) {
         {/* Search */}
         <Search {...{ search, onSearchChange, handleSearch }} />
         {/* Filter */}
-        <Filter />
+        <Filter {...{ resetFilters }} />
         {/* Sort */}
         <Sort {...{ sortBy, onSortChange }} />
       </div>

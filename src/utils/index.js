@@ -134,7 +134,8 @@ export const isAcceptableImage = async (file, options) => {
   });
 };
 
-export const formatSrset = (srcSet = []) => {
+export const formatSrset = srcSet => {
+  srcSet = !srcSet ? [] : srcSet;
   return srcSet
     .reduce((accumulator, currentValue) => {
       // Split each element by '-' to separate the parts
@@ -161,7 +162,7 @@ export const basicSwiperOptions = {
   breakpoints: {
     0: {
       slidesPerView: 1,
-      spaceBetween: 0,
+      spaceBetween: 50,
     },
     450: {
       slidesPerView: 2,
@@ -183,4 +184,34 @@ export const basicSwiperOptions = {
   lazy: 'true',
   navigation: true,
   modules: [Pagination, Navigation],
+};
+
+// puriify
+export const assignStrict = object => {
+  const pure = {};
+  if (!object) return;
+
+  for (let key in object) {
+    if (object[key]) pure[key] = object[key];
+  }
+  return pure;
+};
+
+// this function takes an object an properties it return an object of those properties
+export const selectFromObject = (object, ...keys) => {
+  if (!object) return {};
+
+  const output = {};
+
+  for (let key of keys) {
+    output[key] = object[key];
+  }
+
+  return output;
+};
+
+// convert formDataToJson
+
+export const formDataToObject = form => {
+  return Object.fromEntries(form.entries());
 };

@@ -4,10 +4,17 @@ import Button from '../../../../../customComponents/Button';
 import { isValidAddress, validateFields } from '../../../../../utils/validate';
 import ErrorAlert from '../../../../../customComponents/ErrorAlert';
 
-function Location({ currentStep, onPrevStep, setCurrentStep, type }) {
+function Location({
+  type,
+  currentStep,
+  onPrevStep,
+  setCurrentStep,
+  address,
+  setAddress,
+}) {
   // if type of property is land this step is 3
   const [step] = useState(type === 'land' ? 3 : 4);
-  const [address, setAddress] = useState('');
+
   const [addressError, setAddressError] = useState('');
 
   const onAddressChange = e => setAddress(e.target.value);
@@ -28,30 +35,6 @@ function Location({ currentStep, onPrevStep, setCurrentStep, type }) {
     validateFields(addressField) && setCurrentStep(currentStep + 1);
   };
 
-  /*  use this structure to create something like
-      property = { location: { type: 'Point', coordinates: [ long, lat ] } }
-  */
-
-  const [longitude, setLongitude] = useState();
-  const [latitude, setLatitude] = useState();
-
-  const [errMsg, setErrMsg] = useState('');
-
-  const onLocationSuccess = ({ coords }) => {
-    setLongitude(coords.longitude);
-    setLatitude(coords.latitude);
-  };
-  const onLocationError = error => {
-    setErrMsg('Please provide your GPS Location');
-  };
-
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      onLocationSuccess,
-      onLocationError
-    );
-  });
-
   return (
     <div
       className={`
@@ -65,6 +48,7 @@ function Location({ currentStep, onPrevStep, setCurrentStep, type }) {
           <TextField
             id='address'
             label='Lieu'
+            name='address'
             value={address}
             onChange={onAddressChange}
             required

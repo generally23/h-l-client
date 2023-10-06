@@ -17,11 +17,11 @@ function ForgotPassword() {
     if (account) redirect('/');
   });
   return (
-    <>
+    <main className='main'>
       {successMessage && <SuccessAlert message={successMessage} />}
       {errorMessage && <ErrorAlert message={errorMessage} />}
       <ForgotPasswordForm {...{ setSuccessMessage, setErrorMessage }} />
-    </>
+    </main>
   );
 }
 
