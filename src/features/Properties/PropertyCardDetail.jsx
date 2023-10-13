@@ -42,6 +42,7 @@ const HouseType = ({
   fenced,
   hasPool,
 }) => {
+  console.log(yearBuilt);
   return (
     <>
       {/* Carousel */}
@@ -169,6 +170,7 @@ const HouseType = ({
           )}
         </div>
       </div>
+
       {/* House Details */}
       <ul className='property__detail__primary p-5 bg-neutral-200'>
         {/* House Type */}
@@ -195,7 +197,7 @@ const HouseType = ({
               Construit en:
             </span>
             <span className='property__details__detail__value'>
-              {yearBuilt}
+              {yearBuilt.$y || yearBuilt}
             </span>
           </div>
         </li>
@@ -322,6 +324,7 @@ const CommonDetails = ({ area }) => {
 
 function PropertyCardDetail({ property }) {
   const { type } = property;
+
   return (
     <div className='property__detail'>
       {type === 'house' ? (

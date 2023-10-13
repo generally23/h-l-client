@@ -114,7 +114,7 @@ function MobileNavbar({ account }) {
 
       {/* Navbar */}
       <nav
-        className={`navbar fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-0 h-0 z-50 overflow-hidden ${
+        className={`navbar fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-0 h-0 ease-in duration-300 z-50 overflow-hidden ${
           (open && openNavbarClassNames) || ''
         }`}
       >

@@ -8,7 +8,7 @@ const Replia = ({ src, formattedSrcSet, propertyId }) => {
     <>
       <div className='property__thumbnail__image h-full w-full'>
         <img
-          className='property__thumbnail__image__photo object-cover blur-md h-60 img:h-80 lg:h-72'
+          className='property__thumbnail__image__photo object-cover blur-md h-full'
           src={src}
           srcSet={formattedSrcSet}
           alt='Property Image'
@@ -43,9 +43,9 @@ function PropertyThumbnail({
   return isReplica ? (
     <Replia {...{ src, propertyId, formattedSrcSet }} />
   ) : (
-    <div className='property__thumbnail__image h-full w-full'>
+    <div className='property__thumbnail__image h-full'>
       <img
-        className='property__thumbnail__image__photo object-cover h-60 img:h-80 lg:h-72'
+        className='property__thumbnail__image__photo object-cover h-full'
         src={src}
         srcSet={formattedSrcSet}
         sizes='min-width(600px) 50vw min-width(1200px) calc(100vw / 3) 100w'

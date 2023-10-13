@@ -49,7 +49,9 @@ const Footer = () => {
     >
       {/* Footer Background Image */}
       <div className='absolute top-0 left-0 w-full h-full -z-10'>
+        {/* Background Sitting on top of image */}
         <div className='absolute top-0 left-0 w-full h-full z-10 bg-black/60'></div>
+        {/* Background Image */}
         <img
           src='/background.jpg'
           alt=''

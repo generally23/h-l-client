@@ -7,76 +7,108 @@ import Interior from '../Post/Steps/Interior';
 import Location from '../Post/Steps/Location';
 import Images from '../Post/Steps/Images';
 import Preview from '../Post/Steps/Preview';
+import {
+  addPropertyImages,
+  deleteMyPropertyImages,
+  updateMyProperty,
+} from '../../myPropertiesSlice';
 
 const UpdatePropertyForm = ({ property }) => {
   console.log('Property to update', property);
 
-  const {
-    title,
-    price,
-    description,
-    tags,
-    area,
-    areaBuilt,
-    yearBuilt,
-    fenced,
-    hasBathroom,
-    hasGarage,
-    hasCuisine,
-    hasLivingRoom,
-    hasDiningRoom,
-    hasPool,
-    rooms,
-    externalBathrooms,
-    internalBathrooms,
-    address,
-    uploadedFiles,
-    setTitle,
-    setPrice,
-    setDescription,
-    setTags,
-    setArea,
-    setAreaBuilt,
-    setYearBuilt,
-    setFenced,
-    setHasBathroom,
-    setHasGarage,
-    sethasCuisine,
-    setHasLivingRoom,
-    setHasDiningRoom,
-    setHasPool,
-    setRooms,
-    setExternalBathrooms,
-    setInternalBathrooms,
-    setAddress,
-    setUploadedFiles,
-  } = usePropertyForm(property);
+  const inputs = usePropertyForm(property);
 
   const handleSubmit = async e => {
+    // stop default behavior
     e.preventDefault();
 
-    const form = e.target;
+    const {
+      id,
+      type,
+      title,
+      price,
+      description,
+      tags,
+      area,
+      areaBuilt,
+      yearBuilt,
+      fenced,
+      hasBathroom,
+      hasGarage,
+      hasCuisine,
+      hasLivingRoom,
+      hasDiningRoom,
+      hasPool,
+      rooms,
+      externalBathrooms,
+      internalBathrooms,
+      address,
+      uploadedFiles: images,
+      location,
+    } = inputs;
 
-    const formData = new FormData(form);
-
-    // append images to the form
-    uploadedFiles.forEach(image => formData.append('images', image));
-
-    // set price
-    const price = formData.get('price');
-    // price is formatted to help w readability unformat it
-    const priceNum = price.split('.').join('');
-    // modify price to raw
-    formData.set('price', priceNum);
-    // set the location for the form data
-    const location = {
-      coordinates: [longitude, latitude],
+    // create property object
+    const propertyData = {
+      id,
+      type,
+      title,
+      price,
+      description,
+      // tags is an array join all values
+      tags: tags.join(' '),
+      area,
+      areaBuilt,
+      // make sure to get the number since year built is an object
+      yearBuilt: yearBuilt.$y,
+      fenced,
+      hasBathroom,
+      hasGarage,
+      hasCuisine,
+      hasLivingRoom,
+      hasDiningRoom,
+      hasPool,
+      rooms,
+      externalBathrooms,
+      internalBathrooms,
+      address,
+      location,
     };
 
-    formData.set('location', JSON.stringify(location));
+    console.log(propertyData);
 
-    // send data to server to create a new property
-    // dispatch(createProperty(formData));
+    // send data to server to update property
+
+    const { payload: updatedProperty } = await dispatch(
+      updateMyProperty(propertyData)
+    );
+
+    console.log(updatedProperty);
+
+    // only try to delete images if user remove them
+    if (deletes.length) {
+      await dispatch(
+        deleteMyPropertyImages({ id: updatedProperty.id, names: deletes })
+      );
+    }
+
+    console.log('Deletes: ', deletes, 'Uploads', images);
+
+    // form data to upload new images
+    const formData = new FormData();
+
+    // images/uploadedFiles contain existing files filter those out
+    images.forEach(image => {
+      // file is an upload append to the form
+      if (image.$fileType === 'upload') formData.append('images', image);
+    });
+
+    // send the form data and add these new images
+    dispatch(
+      addPropertyImages({
+        url: `http://localhost:9090/api/v1/properties/${updatedProperty.id}/images`,
+        data: formData,
+      })
+    );
   };
 
   const onPrevStep = e => {
@@ -84,8 +116,11 @@ const UpdatePropertyForm = ({ property }) => {
   };
 
   const onLocationSuccess = ({ coords }) => {
-    setLongitude(coords.longitude);
-    setLatitude(coords.latitude);
+    const { setLocation } = inputs;
+
+    const userLocation = { coordinates: [coords.longitude, coords.latitude] };
+
+    setLocation(userLocation);
   };
   const onLocationError = error => {
     setErrMsg('Please provide your GPS Location');
@@ -97,12 +132,7 @@ const UpdatePropertyForm = ({ property }) => {
 
   const dispatch = useDispatch();
 
-  const type = property.type;
-
-  const [longitude, setLongitude] = useState(null);
-  const [latitude, setLatitude] = useState(null);
-
-  console.log('Tags: ', tags);
+  const [deletes, setDeletes] = useState([]);
 
   const [errMsg, setErrMsg] = useState('');
 
@@ -114,63 +144,30 @@ const UpdatePropertyForm = ({ property }) => {
       {/* Basic */}
       <Basic
         {...{
-          type,
-          title,
-          price,
-          description,
-          tags,
-          setTitle,
-          setPrice,
-          setDescription,
-          setTags,
           currentStep,
           setCurrentStep,
+          ...inputs,
         }}
       />
 
       {/* Area */}
       <Area
         {...{
-          type,
-          area,
-          setArea,
-          areaBuilt,
-          setAreaBuilt,
-          yearBuilt,
-          setYearBuilt,
-          fenced,
-          setFenced,
           currentStep,
           onPrevStep,
           setCurrentStep,
+          ...inputs,
         }}
       />
 
       {/* Interior */}
-      {type === 'house' && (
+      {property.type === 'house' && (
         <Interior
           {...{
-            hasBathroom,
-            setHasBathroom,
-            hasGarage,
-            setHasGarage,
-            hasCuisine,
-            sethasCuisine,
-            hasLivingRoom,
-            setHasLivingRoom,
-            hasDiningRoom,
-            setHasDiningRoom,
-            hasPool,
-            setHasPool,
-            rooms,
-            setRooms,
-            externalBathrooms,
-            setExternalBathrooms,
-            internalBathrooms,
-            setInternalBathrooms,
             currentStep,
             onPrevStep,
             setCurrentStep,
+            ...inputs,
           }}
         />
       )}
@@ -178,57 +175,33 @@ const UpdatePropertyForm = ({ property }) => {
       {/* Location */}
       <Location
         {...{
-          type,
-          address,
-          setAddress,
           currentStep,
           setCurrentStep,
           onPrevStep,
+          ...inputs,
         }}
       />
 
       {/* Images */}
-      {/* <Images
+      <Images
         {...{
-          type,
-          uploadedFiles,
-          setUploadedFiles,
           currentStep,
           setCurrentStep,
           onPrevStep,
+          deletes,
+          setDeletes,
+          ...inputs,
         }}
-      /> */}
+      />
 
       {/* Preview */}
-      {/* <Preview
+      <Preview
         {...{
           currentStep,
           onPrevStep,
-          data: {
-            type,
-            title,
-            price,
-            description,
-            tags: tags.join(' '),
-            area,
-            areaBuilt,
-            // yearBuilt,
-            fenced,
-            hasBathroom,
-            hasGarage,
-            hasCuisine,
-            hasLivingRoom,
-            hasDiningRoom,
-            hasPool,
-            rooms,
-            externalBathrooms,
-            internalBathrooms,
-            address,
-            images: uploadedFiles,
-            owner: account,
-          },
+          inputs,
         }}
-      /> */}
+      />
     </form>
   );
 };

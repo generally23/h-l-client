@@ -77,8 +77,6 @@ const SigninForm = ({ setSuccessMessage, setErrorMessage }) => {
       setErrorMessage('');
       // redirect user after 2 seconds
       setTimeout(() => {
-        // re-authenticate after showing message
-        dispatch(authenticate());
         // redirect
         redirect(-1);
       }, 5000);

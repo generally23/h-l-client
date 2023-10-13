@@ -8,7 +8,6 @@ import Preview from './Steps/Preview';
 import { addPropertyImages, createProperty } from '../../myPropertiesSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { usePropertyForm } from '../../../../hooks/usePropertyForm';
-import { selectFromObject, formDataToObject } from '../../../../utils';
 
 function CreatePropertyForm({ type }) {
   const handleSubmit = async e => {
@@ -35,12 +34,8 @@ function CreatePropertyForm({ type }) {
       internalBathrooms,
       address,
       uploadedFiles: images,
+      location,
     } = inputs;
-
-    // build location object
-    const location = {
-      coordinates: [longitude, latitude],
-    };
 
     // create property object
     const propertyData = {
@@ -70,10 +65,15 @@ function CreatePropertyForm({ type }) {
 
     console.log(propertyData);
 
+    return;
+
     // send data to server to create a new property
+
     const { payload: property } = await dispatch(createProperty(propertyData));
 
     console.log(property);
+
+    /*
 
     // upload images to server after property is created
     const imagesformData = new FormData();
@@ -84,7 +84,7 @@ function CreatePropertyForm({ type }) {
         url: `http://localhost:9090/api/v1/properties/${property.id}/images`,
         data: imagesformData,
       })
-    );
+    );*/
   };
 
   const onPrevStep = e => {
@@ -92,8 +92,11 @@ function CreatePropertyForm({ type }) {
   };
 
   const onLocationSuccess = ({ coords }) => {
-    setLongitude(coords.longitude);
-    setLatitude(coords.latitude);
+    const { setLocation } = inputs;
+
+    const userLocation = { coordinates: [coords.longitude, coords.latitude] };
+
+    setLocation(userLocation);
   };
   const onLocationError = error => {
     setErrMsg('Please provide your GPS Location');
@@ -105,24 +108,19 @@ function CreatePropertyForm({ type }) {
 
   const dispatch = useDispatch();
 
-  /*  use this structure to create something like
-      property = { location: { type: 'Point', coordinates: [ long, lat ] } }
-  */
-
   const inputs = usePropertyForm();
-
-  const [longitude, setLongitude] = useState(null);
-  const [latitude, setLatitude] = useState(null);
 
   const [errMsg, setErrMsg] = useState('');
 
   useEffect(() => {
+    // property type comes from the form set it
+    inputs.setType(type);
     // try to get user's location
     navigator.geolocation.getCurrentPosition(
       onLocationSuccess,
       onLocationError
     );
-  });
+  }, []);
 
   return (
     <form
@@ -189,7 +187,7 @@ function CreatePropertyForm({ type }) {
         {...{
           currentStep,
           onPrevStep,
-          ...inputs,
+          inputs,
         }}
       />
     </form>

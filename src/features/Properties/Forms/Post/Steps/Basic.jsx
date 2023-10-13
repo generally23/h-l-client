@@ -142,7 +142,7 @@ function Basic({
         <div className='property-form__description mb-10'>
           <TextField
             id='outlined-textarea'
-            name='story'
+            name='description'
             label='Description'
             multiline
             minRows={5}

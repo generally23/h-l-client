@@ -35,10 +35,10 @@ function Home() {
 
   const [searchParams] = useSearchParams();
 
-  console.log(searchParams.toString());
+  // console.log(searchParams.toString());
 
   return (
-    <main className='main mx-5 my-8 md:my-12 lg:mx-16'>
+    <main className='main p-5  md:p-12 lg:p-14'>
       <Properties />
     </main>
   );

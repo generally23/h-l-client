@@ -17,17 +17,32 @@ import PropertyCardDetail from './PropertyCardDetail';
 import SimpleCarousel from '../../customComponents/SimpleCarousel';
 
 export const PropertyPreview = ({ property }) => {
-  const { title, price, images = [], tags, owner, id } = property;
+  const {
+    title,
+    price,
+    uploadedFiles: images = [],
+    tags,
+    owner,
+    id,
+  } = property;
 
-  const thumbnails = images.map(img => ({
-    src: URL.createObjectURL(img),
-    srcset: [],
-  }));
+  // console.log('data:', property);
+
+  const thumbnails = images.map(img => {
+    return img.$fileType === 'upload'
+      ? {
+          src: URL.createObjectURL(img),
+          srcset: [],
+        }
+      : img;
+  });
+
+  console.log(thumbnails);
 
   return (
     <div className='property'>
       {/* Thumbnail */}
-      <Carousel showThumbs={false}>
+      <Carousel showThumbs={true}>
         {thumbnails.map(({ src, srcset }) => (
           <PropertyThumbnail
             key={src}
@@ -101,12 +116,16 @@ const Title = ({ title, id }) => {
 // Tags
 
 const Tags = ({ tags }) => {
+  // tags is sometimes a string when property is being rendered but an array when being previewed
+
+  if (typeof tags === 'string') tags = tags.split(' ');
+
   return (
     tags && (
       <div className='property__tags bg-neutral-100'>
         <SimpleCarousel>
           <ul className='property__tags__list flex'>
-            {tags.split(' ').map(tag => (
+            {tags.map(tag => (
               <li
                 key={tag}
                 className='inline-block bg-green-400/70 [&:not(:last-child)]:mr-3 px-2 py-1'

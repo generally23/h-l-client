@@ -10,11 +10,41 @@ const initialState = {
   error: null,
 };
 
-const updateProperty = async propertyId => {
-  const options = { withCredentials: true, cors: true, method: 'PATCH' };
+const deletePropertyImages = async ({ id, names }) => {
+  // { names: ['img1', etc...]}
+  const deleteOptions = {
+    withCredentials: true,
+    url: `${baseURL}/${id}/images/delete`,
+    cors: true,
+    data: { names },
+    method: 'POST',
+  };
 
   try {
-    const response = await axios(`${baseURL}/${propertyId}`, options);
+    return await axios(deleteOptions);
+  } catch (error) {
+    error = error.response
+      ? { ...error.response.data, isError: true }
+      : { message: error.message, isError: true };
+
+    // return error object
+    return error.response ? error.response.data : error;
+  }
+};
+
+const updateProperty = async newProperty => {
+  // update options
+  const options = {
+    url: `${baseURL}/${newProperty.id}`,
+    data: newProperty,
+    withCredentials: true,
+    cors: true,
+    method: 'PATCH',
+  };
+
+  try {
+    // update property json data 1st
+    const response = await axios(options);
 
     return response.data;
   } catch (error) {
@@ -73,7 +103,7 @@ export const addPropertyImages = createAsyncThunk(
   postData()
 );
 
-const updateMyProperty = createAsyncThunk(
+export const updateMyProperty = createAsyncThunk(
   'myProperties/updateMyProperty',
   updateProperty
 );
@@ -81,6 +111,11 @@ const updateMyProperty = createAsyncThunk(
 export const deleteMyProperty = createAsyncThunk(
   'myProperties/deleteMyProperty',
   removeProperty
+);
+
+export const deleteMyPropertyImages = createAsyncThunk(
+  'myProperties/deleteMyPropertyImages',
+  deletePropertyImages
 );
 
 const myPropertiesSlice = createSlice({
@@ -155,6 +190,25 @@ const myPropertiesSlice = createSlice({
         return { ...initialState, properties };
       })
       .addCase(deleteMyProperty.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+      })
+
+      .addCase(deleteMyPropertyImages.pending, state => {
+        state.loading = true;
+      })
+      .addCase(deleteMyPropertyImages.fulfilled, (state, { payload }) => {
+        // payload is either error or propertyId to delete
+
+        if (payload.isError) {
+          // server responded with an error object
+          return { ...initialState, error: payload };
+        }
+        // remove proerty from array
+        // const properties = state.properties.filter(({ id }) => id !== payload);
+        return { ...initialState };
+      })
+      .addCase(deleteMyPropertyImages.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
       })

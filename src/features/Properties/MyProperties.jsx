@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 // Swiper Imports
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
-import 'swiper/css';
+// import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
@@ -21,18 +21,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import { deleteMyProperty, selectMyProperties } from './myPropertiesSlice';
 import { Link } from 'react-router-dom';
 
-const Published = ({ id, images, onDialogueOpen }) => {
-  const thumbnail = images[0].src;
+const Published = ({ id, images = [], onDialogueOpen }) => {
+  /* 
+    get thumbnail image as 1st image
+    might be undefined 
+    consider replacing it 
+  */
+  const thumbnail = images[0]?.src;
+
   return (
     <div className='bg-gray-200'>
       {/* Thumbnail Container */}
-      <div className='account__properties__property__thumbnail'>
+      <div className=''>
         {/* Thumbnail */}
         <figure className='thumbnail'>
           <img
             src={thumbnail}
             alt='Property Image'
-            className='thumbnail__img h-52 block select-none w-full'
+            className='thumbnail__img block select-none object-cover'
           />
         </figure>
       </div>
@@ -65,13 +71,18 @@ const Published = ({ id, images, onDialogueOpen }) => {
   );
 };
 
-const UnPublished = ({ id, images, onDialogueOpen }) => {
-  const thumbnail = images[0].src;
+const UnPublished = ({ id, images = [], onDialogueOpen }) => {
+  /* 
+    get thumbnail image as 1st image
+    might be undefined 
+    consider replacing it 
+  */
+  const thumbnail = images[0]?.src;
 
   return (
     <div className='bg-gray-200'>
       {/* Thumbnail Container */}
-      <div className='account__properties__property__thumbnail relative'>
+      <div className='relative'>
         {/* Action Btns */}
         <div className='absolute top-3 right-3 text-white'>
           <button
@@ -96,7 +107,7 @@ const UnPublished = ({ id, images, onDialogueOpen }) => {
           <img
             src={thumbnail}
             alt=''
-            className='thumbnail__img h-52 block select-none w-full'
+            className='thumbnail__img block select-none object-cover'
           />
         </figure>
       </div>
@@ -120,7 +131,7 @@ const AcknowledgeDeletion = ({
   loading,
 }) => {
   return (
-    <div>
+    <div className='dialogue'>
       <Dialog
         open={open}
         onClose={onDialogueClose}
@@ -194,6 +205,8 @@ function MyProperties() {
   //  My properties
   const { loading, properties, error } = useSelector(selectMyProperties);
 
+  console.log(properties);
+
   return (
     <div className='account__properties' id='my-properties'>
       {successMsg && (
@@ -221,11 +234,25 @@ function MyProperties() {
           className='mySwiper'
           {...{
             ...basicSwiperOptions,
+            breakpoints: {
+              0: {
+                slidesPerView: 1,
+                spaceBetween: 50,
+              },
+              600: {
+                slidesPerView: 2,
+                spaceBetween: 10,
+              },
+              1024: {
+                slidesPerView: 3,
+                spaceBetween: 40,
+              },
+            },
             modules: [Navigation],
           }}
         >
           {properties.map(property => (
-            <SwiperSlide key={property.id}>
+            <SwiperSlide className='h-auto' key={property.id}>
               {property.published ? (
                 <Published {...{ ...property, onDialogueOpen }} />
               ) : (

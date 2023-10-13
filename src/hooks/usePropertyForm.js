@@ -4,10 +4,12 @@ import { useState } from 'react';
 export const usePropertyForm = property => {
   // make sure property is not null or undefined
   property = property ? property : {};
+
   // Basic Step State
+  const [type, setType] = useState(property.type || '');
   const [title, setTitle] = useState(property.title || '');
   const [price, setPrice] = useState(property.price || 0);
-  const [description, setDescription] = useState(property.story || '');
+  const [description, setDescription] = useState(property.description || '');
   const [tags, setTags] = useState(property.tags?.split(' ') || []);
 
   // Area Step State
@@ -46,10 +48,14 @@ export const usePropertyForm = property => {
 
   // Location Step State
   const [address, setAddress] = useState(property.address || '');
+  const [location, setLocation] = useState(property.location || null);
 
   // Images Step
   const [uploadedFiles, setUploadedFiles] = useState(property.images || []);
+
   return {
+    id: property.id,
+    type,
     title,
     price,
     description,
@@ -68,7 +74,9 @@ export const usePropertyForm = property => {
     externalBathrooms,
     internalBathrooms,
     address,
+    location,
     uploadedFiles,
+    setType,
     setTitle,
     setPrice,
     setDescription,
@@ -87,6 +95,7 @@ export const usePropertyForm = property => {
     setExternalBathrooms,
     setInternalBathrooms,
     setAddress,
+    setLocation,
     setUploadedFiles,
   };
 };

@@ -7,7 +7,6 @@ import Paginate from './Paginate';
 import Sort from './Sort';
 import Search from './Search';
 import Filter from './Filter';
-import { assignStrict } from '../../../../utils';
 
 function ControlForm({ children }) {
   const onPageChange = (e, value) => {
@@ -18,7 +17,8 @@ function ControlForm({ children }) {
     // update page state
     setPage(value);
     // update search params
-    setSearchParams({ page: value, search });
+    searchParams.set('page', value);
+    setSearchParams(searchParams);
     // manually submit form
     button.form.requestSubmit();
   };
@@ -69,7 +69,6 @@ function ControlForm({ children }) {
     setSortBy(value);
 
     // update search params
-
     searchParams.set('sortBy', value);
 
     setSearchParams(searchParams);
@@ -79,15 +78,16 @@ function ControlForm({ children }) {
   };
 
   const resetFilters = e => {
-    // list of filter properties to reset
-    const filters = ['type', 'rooms', 'fenced'];
-    // loop through the filters
-    for (let filter of filters) {
-      // delete the filter
-      searchParams.delete(filter);
-    }
-    // update the url
-    setSearchParams(searchParams);
+    // update Filter state
+    setType('');
+    setRooms('');
+    setExternalBathrooms('');
+    setInternalBathrooms('');
+    setFenced(false);
+
+    // update the url and avoid passing a filters object
+    // order goes search, filter, sort, paginate
+    setSearchParams({ search, sortBy, page });
     // submit the form
     e.target.form.requestSubmit();
   };
@@ -103,6 +103,19 @@ function ControlForm({ children }) {
   // Search
   const [search, setSearch] = useState(searchParams.get('search') || '');
 
+  // Filter
+  const [type, setType] = useState(searchParams.get('type') || '');
+  const [rooms, setRooms] = useState(searchParams.get('rooms') || '');
+  const [externalBathrooms, setExternalBathrooms] = useState(
+    searchParams.get('externalBathrooms') || ''
+  );
+  const [internalBathrooms, setInternalBathrooms] = useState(
+    searchParams.get('internalBathrooms') || ''
+  );
+
+  // checkboxes
+  let [fenced, setFenced] = useState(searchParams.get('fenced'));
+
   // Sort
   const [sortBy, setSortBy] = useState(searchParams.get('sortBy') || '');
 
@@ -115,9 +128,26 @@ function ControlForm({ children }) {
         {/* Search */}
         <Search {...{ search, onSearchChange, handleSearch }} />
         {/* Filter */}
-        <Filter {...{ resetFilters }} />
+        <Filter
+          {...{
+            resetFilters,
+            type,
+            setType,
+            rooms,
+            setRooms,
+            externalBathrooms,
+            setExternalBathrooms,
+            internalBathrooms,
+            setInternalBathrooms,
+          }}
+        />
         {/* Sort */}
-        <Sort {...{ sortBy, onSortChange }} />
+        <Sort
+          {...{
+            sortBy,
+            onSortChange,
+          }}
+        />
       </div>
       {/* Paginate */}
       <Paginate {...{ page, pages, onPageChange }} />

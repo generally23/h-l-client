@@ -1,48 +1,53 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import React from 'react';
+// Swiper Imports
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
+// import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
 export default function Test({ children }) {
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   return (
     <main className='main'>
-      <Button variant='outlined' onClick={handleClickOpen}>
-        Delete
-      </Button>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
+      <Swiper
+        className='mySwiper'
+        modules={[Navigation]}
+        spaceBetween={50}
+        slidesPerView={2}
       >
-        <DialogTitle id='alert-dialog-title'>
-          {"Use Google's location service?"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id='alert-dialog-description'>
-            Let Google help apps determine location. This means sending
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleClose} autoFocus>
-            Agree
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <SwiperSlide className='h-auto'>
+          <div className='slide bg-green-400 h-full'>
+            <img
+              className='block bg-cover h-full'
+              src='https://d21jok9tqndbay.cloudfront.net/property-img-b3d7r71w4tlm6hydsj'
+            />
+          </div>
+        </SwiperSlide>
+        <SwiperSlide className='h-auto'>
+          <div className='slide bg-green-400 h-full'>
+            <img
+              className='block bg-cover h-full'
+              src='https://d21jok9tqndbay.cloudfront.net/property-img-b3d7r71w4tlm6hyhag'
+            />
+          </div>
+        </SwiperSlide>
+        <SwiperSlide className='h-auto'>
+          <div className='slide bg-green-400 h-full'>
+            <img
+              className='block bg-cover h-full'
+              src='https://d21jok9tqndbay.cloudfront.net/property-img-b3d7r71w4tlm6hykx6'
+            />
+          </div>
+        </SwiperSlide>
+        <SwiperSlide className='h-auto'>
+          <div className='slide bg-green-400 h-full'>
+            <img
+              className='block bg-cover h-full'
+              src='https://d21jok9tqndbay.cloudfront.net/property-img-b3d7r71w4tlm6hypb0'
+            />
+          </div>
+        </SwiperSlide>
+      </Swiper>
     </main>
   );
 }

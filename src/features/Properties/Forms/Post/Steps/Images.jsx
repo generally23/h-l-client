@@ -10,9 +10,8 @@ import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import { basicSwiperOptions, isAcceptableImage } from '../../../../../utils';
+import { basicSwiperOptions, processAndMetaFile } from '../../../../../utils';
 import { nanoid } from '@reduxjs/toolkit';
-import { usePropertyForm } from '../../../../../hooks/usePropertyForm';
 
 const ImagePreviews = ({ images, onDelete, onReplaceClick }) => {
   return (
@@ -21,36 +20,45 @@ const ImagePreviews = ({ images, onDelete, onReplaceClick }) => {
       {...{ ...basicSwiperOptions, modules: [Navigation] }}
     >
       {images.map(image => {
-        const imageUrl = URL.createObjectURL(image);
-        const statusClass = image.isAcceptable
-          ? 'border-green-400'
-          : 'border-red-500';
-        const { fileId } = image;
-
-        const sizeInMb = Math.ceil(image.size / (1000 * 1024));
+        let imageUrl;
+        let statusClass;
+        const { $fileId = image.sourceName } = image;
         const maxSizeInMb = 5;
+        const sizeInMb = Math.ceil(image.size / (1000 * 1024));
+
+        // find which type of image we have (existing | upload)
+        if (image.$fileType === 'upload') {
+          imageUrl = URL.createObjectURL(image);
+          statusClass = image.$isAcceptable
+            ? 'border-green-400'
+            : 'border-red-500';
+        } else {
+          imageUrl = image.src;
+          statusClass = 'border-green-400';
+        }
 
         return (
-          <SwiperSlide key={nanoid(32)}>
+          <SwiperSlide key={nanoid()}>
             <div className='preview__item p-5'>
               <div
                 className={`preview__item__container bg-white shadow-md relative border-2 rounded-lg overflow-hidden ${statusClass}`}
               >
                 <button
                   className='delete-icon absolute top-2 right-2 p-1 text-white bg-red-500/60 rounded-md'
-                  data-delete-id={image.fileId}
+                  data-delete-id={$fileId}
                   onClick={onDelete}
                   type='button'
                 >
                   <Close />
                 </button>
+
                 <figure className='thumbnail'>
                   <label htmlFor='replacement' className='block'>
                     <img
                       src={imageUrl}
                       alt='Thumbnail'
                       onLoad={() => URL.revokeObjectURL(imageUrl)}
-                      data-file-id={fileId}
+                      data-file-id={$fileId}
                       onClick={onReplaceClick}
                       className='thumbnail__img block h-52 w-full object-cover select-none'
                     />
@@ -68,7 +76,7 @@ const ImagePreviews = ({ images, onDelete, onReplaceClick }) => {
                     </span>
                     <span
                       className={`thumbnail__meta__size ${
-                        image.isAcceptable ? 'text-green-500' : 'text-red-500'
+                        image.$isAcceptable ? 'text-green-500' : 'text-red-500'
                       }`}
                     >
                       HD
@@ -94,31 +102,33 @@ function Images({
   onPrevStep,
   uploadedFiles,
   setUploadedFiles,
+  deletes,
+  setDeletes,
 }) {
   const onReplace = async e => {
     console.log('Replaced Id: ', replacedId);
 
-    if (replacedId) {
-      const replacement = e.target.files.item(0);
+    const replacement = e.target.files.item(0);
 
-      if (!replacement) return;
-
-      const isAcceptable = await isAcceptableImage(replacement);
-
-      replacement.isAcceptable = isAcceptable;
-      replacement.fileId = nanoid();
-
+    if (replacedId && replacement) {
+      // check file and assign meta data
+      await processAndMetaFile(replacement);
+      // new files after replacement occurs
       const newFiles = uploadedFiles.map(file => {
-        if (file.fileId === replacedId) {
+        // file is an upload and is replacement target
+        if (file.$fileType === 'upload' && file.$fileId === replacedId)
+          return replacement;
+        // file is existing upload
+        if (file.sourceName === replacedId) {
+          // add it to deletes and remove on submit
+          setDeletes([...deletes, replacedId]);
           return replacement;
         }
-
+        // file did not match
         return file;
       });
       // reset relacedId
       replacedId = null;
-      // reset inut value
-      e.target.value = '';
       // update uploaded files
       setUploadedFiles(newFiles);
     }
@@ -126,17 +136,33 @@ function Images({
 
   const onReplaceClick = e => {
     const image = e.target;
-
+    // set replacedId as item clicked
     replacedId = image.dataset.fileId;
   };
 
   const onDelete = e => {
+    // precisely get btn
     const btn = e.target.closest('button');
-
+    // return if not clicked
+    if (!btn) return;
+    // get file id to be deleted
     const { deleteId } = btn.dataset;
-
+    // files array after deletion
     const rest = uploadedFiles.filter(file => {
-      return file.fileId !== deleteId;
+      // if file is an upload just remove it from uploads
+      if (file.$fileType === 'upload') {
+        return file.$fileId !== deleteId;
+      }
+
+      // file is an existing image { sourcename: '' src: '', srcset: [] } coming from the server
+      if (file.sourceName === deleteId) {
+        // image needs to be deleted from server, add it to deletes which will be removed on form submit
+        // setDeletes([...deletes, file.sourceName]);
+        setDeletes([...deletes, file.sourceName]);
+      }
+
+      // temporarily remove it from uploads
+      return file.sourceName !== deleteId;
     });
 
     setUploadedFiles(rest);
@@ -146,7 +172,8 @@ function Images({
     // uploaded files
     let files = Array.from(e.target.files);
 
-    e.target.value = '';
+    // reset input value to allow for more uploads (even if last upload did not change)
+    // e.target.value = '';
 
     const uploadedLength = uploadedFiles.length;
 
@@ -163,18 +190,19 @@ function Images({
 
     // add custom info to each file
     for (let file of files) {
-      const isAcceptable = await isAcceptableImage(file);
-      file.isAcceptable = isAcceptable;
-      file.fileId = nanoid();
+      await processAndMetaFile(file);
     }
 
+    // if files have been uploaded update the uploads
     files.length && setUploadedFiles([...files, ...uploadedFiles]);
   };
 
   const onPreview = e => {
     console.log('Previewing...');
     // filter invalid images and keep acceptables
-    const acceptableImages = uploadedFiles.filter(image => image.isAcceptable);
+    const acceptableImages = uploadedFiles.filter(
+      image => image.$isAcceptable || image.sourceName
+    );
     // send images to form
     setUploadedFiles(acceptableImages);
     // move to next step
@@ -184,7 +212,7 @@ function Images({
   // State
   const [step] = useState(type === 'land' ? 4 : 5);
 
-  console.log(uploadedFiles);
+  // console.log(uploadedFiles);
 
   let replacedId = null;
 

@@ -36,6 +36,9 @@ function App() {
     window.scrollTo(0, 0);
   }, [pathname]);
 
+  // use this effect to flash success and error messages to the UI
+  useEffect(() => {}, []);
+
   return (
     <div className='App' id='app'>
       <Header />

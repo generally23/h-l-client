@@ -8,7 +8,7 @@ const BathroomInput = ({
   setExternalBathrooms,
   setInternalBathrooms,
 }) => {
-  const onBathroomChange = setter => e => setter(e.target.value);
+  const onBathroomChange = setter => e => setter(parseInt(e.target.value) || 0);
 
   return (
     <>
@@ -70,8 +70,7 @@ function Interior({
   // Checkbox handlers
   const onCheckboxChange = (setter, value) => e => setter(!value);
 
-  // text input with (e.target.value) handlers
-  const onTextChange = setter => e => setter(e.target.value);
+  const onRoomsChange = e => setRooms(parseInt(e.target.value) || 1);
 
   const onNextStep = e => {
     setCurrentStep(currentStep + 1);
@@ -101,9 +100,8 @@ function Interior({
             name='rooms'
             type='number'
             value={rooms}
-            onChange={onTextChange(setRooms)}
+            onChange={onRoomsChange}
             placeholder='Chambres'
-            // helperText='Une maison doit avoir des chambres'
             InputProps={{ inputProps: { min: 1 } }}
             required
             fullWidth

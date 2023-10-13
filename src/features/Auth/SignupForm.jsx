@@ -16,6 +16,7 @@ import Step2 from './Step2';
 import { alertAndRedirectBack, setLocalAuth } from '../../utils';
 import Step3 from './Step3';
 import { CircularProgress } from '@mui/material';
+import { authenticate } from './appAuthSlice';
 
 const SignupForm = ({ setSuccessMessage, setErrorMessage }) => {
   // event handlers

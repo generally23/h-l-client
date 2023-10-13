@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Button from '../../../../../customComponents/Button';
+import { PropertyPreview } from '../../../Property';
 
-const Preview = ({ type, currentStep, onPrevStep }) => {
+const Preview = ({ currentStep, onPrevStep, inputs }) => {
+  const { type } = inputs;
   const [step] = useState(type === 'land' ? 5 : 6);
 
   // console.log(property);
@@ -14,9 +16,9 @@ const Preview = ({ type, currentStep, onPrevStep }) => {
   `}
     >
       {/* View */}
-      {/* <div className='mb-5'>
-        <PropertyPreview property={property} />
-      </div> */}
+      <div className='mb-5'>
+        <PropertyPreview property={inputs} />
+      </div>
 
       {/* Control */}
       <div className='property-form__controls flex'>

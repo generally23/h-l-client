@@ -42,7 +42,8 @@ function Account({ firstname, lastname, email, avatarUrls, verified }) {
                 avatarUrls[0] ||
                 'http://localhost:9090/assets/images/avatar.avif'
               }
-              crossOrigin={(avatarUrls[0] && 'cors') || ''}
+              // crossOrigin={(avatarUrls[0] && 'cors') || ''}
+              crossOrigin='use-credentials'
               className='account__info__avatar__img rounded-full object-cover w-24 h-24'
               //crossOrigin='true'
               width={100}

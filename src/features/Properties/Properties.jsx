@@ -5,6 +5,7 @@ import Property from './Property';
 import { Grid } from '@mui/material';
 import ControlForm from './Forms/Get/ControlForm';
 import PropertySkeleton from './PropertySkeleton';
+import Paginate from './Forms/Get/Paginate';
 
 function Properties() {
   // contains result from fetching properties, includes properties and pagination etc...

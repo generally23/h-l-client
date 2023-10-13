@@ -25,7 +25,7 @@ function Search({ search, onSearchChange, handleSearch }) {
           flex
           flex-col 
           justify-center 
-          bg-green-400 
+          bg-green-400/95
           grow-0 
         '
       >

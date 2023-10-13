@@ -1,3 +1,4 @@
+import { nanoid } from '@reduxjs/toolkit';
 import { Navigation, Pagination } from 'swiper/modules';
 
 export const formatMoney = (number = 0) => {
@@ -181,7 +182,7 @@ export const basicSwiperOptions = {
       spaceBetween: 40,
     },
   },
-  lazy: 'true',
+  // lazy: 'true',
   navigation: true,
   modules: [Pagination, Navigation],
 };
@@ -210,8 +211,14 @@ export const selectFromObject = (object, ...keys) => {
   return output;
 };
 
-// convert formDataToJson
-
-export const formDataToObject = form => {
-  return Object.fromEntries(form.entries());
+export const processAndMetaFile = async file => {
+  if (!file) return;
+  // check to see if file is (HD & < 5MB )
+  const isAcceptable = await isAcceptableImage(file);
+  // set file type
+  file.$fileType = 'upload';
+  // mark file as acceptable for reference
+  file.$isAcceptable = isAcceptable;
+  // create a unique id to identify this file later
+  file.$fileId = nanoid();
 };

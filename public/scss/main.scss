@@ -8,6 +8,7 @@ $shadow-black: rgba(0, 0, 0, 0.5);
 img,
 video {
   max-width: 100%;
+  max-height: 100%;
 }
 
 html,
@@ -98,17 +99,107 @@ body {
 
   // property filtering
   .filter {
-    &__container {
+    &__overlay {
       position: fixed;
       overflow: hidden;
+      visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       top: 0;
       left: 0;
       z-index: 100;
       width: 100%;
       height: 0;
       transition: 0.5s;
+
       &--open {
+        visibility: visible;
         height: 100%;
+        // background: rgba(0, 0, 0, 0.8);
+        // backdrop-filter: blur(10px);
+        // -webkit-backdrop-filter: blur(10px);
+      }
+    }
+
+    &__container {
+      background: #fff;
+      // border-radius: 10px;
+      // margin: 2rem 1rem;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    &__banner {
+      display: flex;
+      align-items: center;
+      padding: 0 1rem;
+      box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.4);
+      background: #fff;
+      flex: 0 0 5%;
+
+      &__label {
+      }
+    }
+
+    &__list {
+      flex: 1 0 80%;
+      overflow: auto;
+
+      &__item {
+        // background: #eee;
+        // padding: 10px;
+        &:not(:last-child) {
+          margin-bottom: 0.5rem;
+        }
+      }
+    }
+
+    &__cta-btns {
+      box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
+      background: #fff;
+      padding: 0 1rem;
+      border-radius: 20px 20px 0 0;
+      flex: 0 0 15%;
+    }
+
+    &__name {
+      font-weight: 500;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.5px;
+
+      &--secondary {
+        font-size: 1rem;
+      }
+    }
+
+    &__btn {
+      $button-color: rgba(132, 6, 90, 0.953);
+
+      border: 2px solid $button-color;
+      padding: 5px 15px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      text-transform: capitalize;
+      cursor: pointer;
+      transition: 0.5s;
+      position: relative;
+      overflow: hidden;
+
+      &--active {
+        color: #fff;
+        border: 2px solid $button-color;
+        background: $button-color;
+        transform: scale(1.1);
+        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
+      }
+
+      &:not(:last-child) {
+        margin-right: 0.8rem;
       }
     }
   }
@@ -157,7 +248,7 @@ body {
 }
 
 .header {
-  //height: 5rem;
+  height: 4rem;
   .logo {
   }
 
@@ -177,23 +268,10 @@ body {
 }
 
 .main {
-  min-height: 100vh;
+  min-height: calc(100vh - 4rem);
 }
 
 .footer {
-  // overflow: hidden;
-  // &::before {
-  //   content: '';
-  //   width: 100%;
-  //   height: 100%;
-  //   display: block;
-  //   position: absolute;
-  //   top: -90%;
-  //   //transform: translateY(50%);
-  //   border-radius: 50%;
-  //   left: 0;
-  //   background: white;
-  // }
   &__navigation {
     &__link {
       white-space: nowrap;

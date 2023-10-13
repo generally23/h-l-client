@@ -162,6 +162,7 @@ function Area({
                 key='yearBuilt'
                 value={yearBuilt}
                 onChange={onYearBuiltChange}
+                label='Année Construit'
                 views={['year']}
                 sx={{ width: '100%' }}
                 slotProps={{
