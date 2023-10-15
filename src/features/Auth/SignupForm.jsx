@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   isValidEmail,
@@ -8,15 +7,14 @@ import {
   isValidPassword,
   validateFields,
 } from '../../utils/validate';
-import { signup } from './accountsSlice';
 
 import Button from '../../customComponents/Button';
 import Step1 from './Step1';
 import Step2 from './Step2';
-import { alertAndRedirectBack, setLocalAuth } from '../../utils';
 import Step3 from './Step3';
 import { CircularProgress } from '@mui/material';
-import { authenticate } from './appAuthSlice';
+import { useAccount } from '../../hooks/useAccount';
+import { manageAccountAuth } from '../../utils/crud';
 
 const SignupForm = ({ setSuccessMessage, setErrorMessage }) => {
   // event handlers
@@ -31,10 +29,17 @@ const SignupForm = ({ setSuccessMessage, setErrorMessage }) => {
 
     const form = e.target;
 
-    const formData = new FormData(form);
+    const data = new FormData(form);
 
-    dispatch(signup(formData));
+    manageAccountAuth({
+      data,
+      path: 'signup',
+      setLoading,
+      setError,
+      setAccount,
+    });
   };
+
   const handleClick = e => {
     e.preventDefault();
 
@@ -129,9 +134,10 @@ const SignupForm = ({ setSuccessMessage, setErrorMessage }) => {
     }
   };
 
-  const dispatch = useDispatch();
-  const { loading, account, error } = useSelector(state => state.account);
   const redirect = useNavigate();
+
+  const { loading, setLoading, error, setError, account, setAccount } =
+    useAccount();
 
   useEffect(() => {
     if (account) {

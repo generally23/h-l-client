@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { isValidPassword, validateFields } from '../../utils/validate';
-import { useDispatch, useSelector } from 'react-redux';
-import { changeMyPassword } from './accountsSlice';
 import Button from '../../customComponents/Button';
 import { useNavigate } from 'react-router-dom';
 import PasswordVisibility from './PasswordVisibility';
+import { manageAccountAuth } from '../../utils/crud';
+import { accountsURL } from '../../constants';
+import { useAccount } from '../../hooks/useAccount';
 
 function ChangePasswordForm({ setSuccessMessage, setErrorMessage }) {
   const onCurrentPasswordChange = e => setCurrentPassword(e.target.value);
@@ -39,18 +40,32 @@ function ChangePasswordForm({ setSuccessMessage, setErrorMessage }) {
 
     if (isValid) {
       // submit data to server
-      const data = { currentPassword, newPassword };
-      dispatch(changeMyPassword(data));
+      changeMyPassword({ currentPassword, newPassword });
     }
   };
 
-  const dispatch = useDispatch();
+  const changeMyPassword = data => {
+    // url to sign in
+    const path = `change-my-password`;
+    // action being performed
+    const method = 'update';
 
-  const { loading, account, error } = useSelector(state => state.account);
+    manageAccountAuth({
+      data,
+      path,
+      setLoading,
+      setError,
+      setAccount,
+      method,
+    });
+  };
+
+  const { loading, setLoading, error, setError, account, setAccount } =
+    useAccount();
 
   const redirect = useNavigate();
 
-  const [passwordType, setPasswordType] = useState('password');
+  const [passwordVisible, setPasswordVisible] = useState('password');
 
   useEffect(() => {
     if (account) {
@@ -61,7 +76,7 @@ function ChangePasswordForm({ setSuccessMessage, setErrorMessage }) {
       // redirect user after 2 seconds
       setTimeout(() => {
         redirect('/');
-      }, 5000);
+      }, 3000);
     }
 
     if (error) {
@@ -90,13 +105,13 @@ function ChangePasswordForm({ setSuccessMessage, setErrorMessage }) {
           <input
             id='password'
             className='change-password__input block w-full rounded border-2 border-black p-2 mb-2'
-            type={passwordType}
+            type={passwordVisible ? 'text' : 'password'}
             value={currentPassword}
             onChange={onCurrentPasswordChange}
           />
 
           {/* Password View/Hide Icon */}
-          <PasswordVisibility {...{ passwordType, setPasswordType }} />
+          <PasswordVisibility {...{ passwordVisible, setPasswordVisible }} />
         </div>
 
         {/* Error */}
@@ -116,13 +131,13 @@ function ChangePasswordForm({ setSuccessMessage, setErrorMessage }) {
         <div className='relative'>
           <input
             className='change-password__input block w-full rounded border-2 border-black p-2 mb-2'
-            type={passwordType}
+            type={passwordVisible ? 'text' : 'password'}
             value={newPassword}
             id='confirm-password'
             onChange={onNewPasswordChange}
           />
           {/* Password View/Hide Icon */}
-          <PasswordVisibility {...{ passwordType, setPasswordType }} />
+          <PasswordVisibility {...{ passwordVisible, setPasswordVisible }} />
         </div>
 
         <p

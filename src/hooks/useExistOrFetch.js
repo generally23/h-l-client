@@ -7,11 +7,7 @@ const useExistOrFetch = (property, propertyId = '') => {
   const dispatch = useDispatch();
   useEffect(() => {
     if (!property) {
-      dispatch(
-        fetchProperty({
-          url: `http://localhost:9090/api/v1/properties/${propertyId}`,
-        })
-      );
+      dispatch(fetchProperty(propertyId));
     }
   }, []);
 };

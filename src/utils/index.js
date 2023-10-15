@@ -135,23 +135,6 @@ export const isAcceptableImage = async (file, options) => {
   });
 };
 
-export const formatSrset = srcSet => {
-  srcSet = !srcSet ? [] : srcSet;
-  return srcSet
-    .reduce((accumulator, currentValue) => {
-      // Split each element by '-' to separate the parts
-      const parts = currentValue.split('-');
-
-      const width = parts[parts.length - 1];
-
-      // Format the string and add it to the accumulator
-      accumulator.push(`${currentValue} ${width}w`);
-
-      return accumulator;
-    }, [])
-    .join(', ');
-};
-
 // extendable
 export const basicSwiperOptions = {
   slidesPerView: 3,
@@ -221,4 +204,12 @@ export const processAndMetaFile = async file => {
   file.$isAcceptable = isAcceptable;
   // create a unique id to identify this file later
   file.$fileId = nanoid();
+};
+
+const buildOptionObject = (url = '') => ({ url: url });
+
+export const toBoolean = value => {
+  if (value === 'true') return true;
+  if (value === 'false') return false;
+  return false;
 };

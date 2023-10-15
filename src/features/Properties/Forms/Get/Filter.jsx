@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import RangeSlider from '../../../../customComponents/Range.jsx';
 import { Close, FilterAlt } from '@mui/icons-material';
 import { useSearchParams } from 'react-router-dom';
+import { InputAdornment, TextField } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateFilters } from '../../../Filters/index.js';
 
-const FilterButtons = ({ buttons, state, setState, onSingleValueChange }) => {
+const FilterButtons = ({ buttons, state, onSingleValueChange }) => {
   return buttons.map(({ name, value, content }) => (
     <button
       key={value}
@@ -13,18 +16,20 @@ const FilterButtons = ({ buttons, state, setState, onSingleValueChange }) => {
       }`}
       name={name}
       value={value}
-      onClick={onSingleValueChange(state, setState)}
+      onClick={onSingleValueChange(state)}
     >
       {content || value}
     </button>
   ));
 };
 
-const FilterType = ({ onSingleValueChange, type, setType }) => {
+const FilterType = ({ onSingleValueChange }) => {
   const buttons = [
     { name: 'type', value: 'house', content: 'Maison' },
     { name: 'type', value: 'land', content: 'Terrain' },
   ];
+
+  const { type } = useSelector(state => state.filters);
 
   return (
     <li className='filter__list__item'>
@@ -33,46 +38,67 @@ const FilterType = ({ onSingleValueChange, type, setType }) => {
 
       {/* Filter Values */}
       <div className='filter__value'>
-        <FilterButtons
-          {...{ buttons, state: type, setState: setType, onSingleValueChange }}
-        />
+        <FilterButtons {...{ buttons, state: type, onSingleValueChange }} />
       </div>
     </li>
   );
 };
 
 const FilterPrice = () => {
+  const {} = useSelector(state => state.filters);
   return (
     <li className='filter__list__item'>
       {/* Filter Name */}
-      <div className='filter__name'>Chambres</div>
+      <div className='filter__name'>Prix</div>
 
       {/* Filter Values */}
       <div className='filter__value'>
-        <button name='type' className='' type='button' value='house'>
-          1
-        </button>
-
-        <button type='button' className='' name='type' value='land'>
-          2
-        </button>
-        <button type='button' className='' name='type' value='land'>
-          3
-        </button>
-
-        <button type='button' className='' name='type' value='land'>
-          4
-        </button>
-
-        <button type='button' className='' name='type' value='land'>
-          5+
-        </button>
+        <div className='filter__value__textfields flex justify-between'>
+          {/* Min Price */}
+          <div className='mr-5'>
+            <TextField
+              size='small'
+              name='price[lte]'
+              value={5000}
+              label='Minimum'
+              // InputProps={{ inputProps: { min: 1 } }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <strong>FG</strong>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </div>
+          {/* Max Price */}
+          <div className=''>
+            <TextField
+              size='small'
+              name='price[gte]'
+              value={10000}
+              label='Maximum'
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <strong>FG</strong>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </div>
+        </div>
+        {/* Slider */}
+        <div className='slider'>
+          <RangeSlider />
+        </div>
       </div>
     </li>
   );
 };
 
-const FilterRoom = ({ onSingleValueChange, rooms, setRooms }) => {
+const FilterRoom = ({ onSingleValueChange }) => {
+  const { rooms } = useSelector(state => state.filters);
   const buttons = [
     { name: 'rooms', value: '1' },
     { name: 'rooms', value: '2' },
@@ -92,7 +118,6 @@ const FilterRoom = ({ onSingleValueChange, rooms, setRooms }) => {
           {...{
             buttons,
             state: rooms,
-            setState: setRooms,
             onSingleValueChange,
           }}
         />
@@ -101,13 +126,11 @@ const FilterRoom = ({ onSingleValueChange, rooms, setRooms }) => {
   );
 };
 
-const FilterBathroom = ({
-  externalBathrooms,
-  internalBathrooms,
-  setExternalBathrooms,
-  setInternalBathrooms,
-  onSingleValueChange,
-}) => {
+const FilterBathroom = ({ onSingleValueChange }) => {
+  const { externalBathrooms, internalBathrooms } = useSelector(
+    state => state.filters
+  );
+
   const externalBathButtons = [
     { name: 'externalBathrooms', value: '1' },
     { name: 'externalBathrooms', value: '2' },
@@ -138,16 +161,15 @@ const FilterBathroom = ({
           <div className='filter__value'>
             <FilterButtons
               {...{
-                buttons: internalBathButtons,
+                buttons: externalBathButtons,
                 state: externalBathrooms,
-                setState: setExternalBathrooms,
                 onSingleValueChange,
               }}
             />
           </div>
         </li>
 
-        <li className='filter__list__nest__item'>
+        <li className='filter__list__item filter__list__item--nest'>
           <div className='filter__name filter__name--secondary'>
             Douches Internes
           </div>
@@ -156,9 +178,8 @@ const FilterBathroom = ({
           <div className='filter__value'>
             <FilterButtons
               {...{
-                buttons: externalBathButtons,
+                buttons: internalBathButtons,
                 state: internalBathrooms,
-                setState: setInternalBathrooms,
                 onSingleValueChange,
               }}
             />
@@ -170,28 +191,191 @@ const FilterBathroom = ({
 };
 
 const FilterArea = () => {
-  return <div className='filter'></div>;
+  const {} = useSelector(state => state.filters);
+
+  return (
+    <li className='filter__list__item'>
+      {/* Filter Name */}
+      <div className='filter__name'>Superficie</div>
+
+      {/* Filter Values */}
+      <div className='filter__value'>
+        <div className='filter__value__textfields flex justify-between'>
+          {/* Min Area */}
+          <div className='mr-5'>
+            <TextField
+              size='small'
+              name='area[lte]'
+              value={500}
+              label='Minimum'
+              // InputProps={{ inputProps: { min: 1 } }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <strong>
+                      m<sup>2</sup>
+                    </strong>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </div>
+
+          {/* Max Area */}
+          <div className=''>
+            <TextField
+              size='small'
+              name='area[gte]'
+              value={10000}
+              label='Maximum'
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <strong>
+                      m<sup>2</sup>
+                    </strong>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Slider */}
+        <div className='slider'>
+          <RangeSlider />
+        </div>
+      </div>
+    </li>
+  );
 };
 
 const FilterYearBuilt = () => {
   return <div className='filter'></div>;
 };
 
-const FilterExtraAttributes = () => {
-  return <div className='filter'></div>;
+const FilterExtraAttributes = ({ onCheck }) => {
+  const {
+    fenced,
+    hasGarage,
+    hasCuisine,
+    hasLivingRoom,
+    hasDiningRoom,
+    hasPool,
+  } = useSelector(state => state.filters);
+
+  return (
+    <li className='filter__list__item'>
+      {/* Filter Name */}
+      <div className='filter__name'>Autres Attributs</div>
+
+      {/* Filter Values */}
+      <div className='filter__value flex'>
+        {/* Salon */}
+        <button
+          type='button'
+          className={`filter__btn capitalize ${
+            hasLivingRoom ? 'filter__btn--checked' : ''
+          }`}
+          name='hasLivingRoom'
+          value={hasLivingRoom}
+          onClick={onCheck(hasLivingRoom)}
+        >
+          Salon
+        </button>
+
+        {/* Garage */}
+        <button
+          type='button'
+          className={`filter__btn capitalize ${
+            hasGarage ? 'filter__btn--checked' : ''
+          }`}
+          name='hasGarage'
+          value={hasGarage}
+          onClick={onCheck(hasGarage)}
+        >
+          Garage
+        </button>
+
+        {/* Dining */}
+        <button
+          type='button'
+          className={`filter__btn capitalize ${
+            hasDiningRoom ? 'filter__btn--checked' : ''
+          }`}
+          name='hasDiningRoom'
+          value={hasDiningRoom}
+          onClick={onCheck(hasDiningRoom)}
+        >
+          Sale à manger
+        </button>
+
+        {/* Kitchen */}
+        <button
+          type='button'
+          className={`filter__btn capitalize ${
+            hasCuisine ? 'filter__btn--checked' : ''
+          }`}
+          name='hasCuisine'
+          value={hasCuisine}
+          onClick={onCheck(hasCuisine)}
+        >
+          Cuisine
+        </button>
+
+        {/* Fenced */}
+        <button
+          type='button'
+          className={`filter__btn capitalize ${
+            fenced ? 'filter__btn--checked' : ''
+          }`}
+          name='fenced'
+          value={fenced}
+          onClick={onCheck(fenced)}
+        >
+          Cloture
+        </button>
+
+        {/* Pool */}
+        <button
+          type='button'
+          className={`filter__btn capitalize ${
+            hasPool ? 'filter__btn--checked' : ''
+          }`}
+          name='hasPool'
+          value={hasPool}
+          onClick={onCheck(hasPool)}
+        >
+          Piscine
+        </button>
+      </div>
+    </li>
+  );
 };
 
-function Filter({
-  resetFilters,
-  type,
-  setType,
-  rooms,
-  setRooms,
-  externalBathrooms,
-  setExternalBathrooms,
-  internalBathrooms,
-  setInternalBathrooms,
-}) {
+const CtaButtons = ({ resetFilters }) => {
+  return (
+    <div className='filter__cta-btns flex items-center'>
+      <button
+        className='bg-blue-500 tracking-wide text-white py-2 px-4 mr-5 rounded-3xl grow'
+        type='button'
+        onClick={resetFilters}
+      >
+        Réinitialiser
+      </button>
+
+      <button
+        className='bg-green-500 tracking-wide text-white py-2 px-4 rounded-3xl grow'
+        type='button'
+        onClick={e => {}}
+      >
+        Recherchez
+      </button>
+    </div>
+  );
+};
+
+function Filter({ resetFilters }) {
   const toggleFilter = e => {
     setOpen(!open);
 
@@ -199,21 +383,47 @@ function Filter({
     document.body.style.overflow = !open ? 'hidden' : '';
   };
 
-  const onSingleValueChange = (state, setter) => e => {
+  const onSingleValueChange = state => e => {
+    e.preventDefault();
     // get button
     const button = e.target;
     // get name and value from button
     const { name, value } = button;
 
     // if value hasn't changed empty it to reset the filter and stop here
-    if (state === value) return setter('');
+    if (state === value) {
+      searchParams.delete(name);
+      setSearchParams(searchParams);
+      return dispatch(updateFilters({ [name]: '' }));
+    }
 
     // update state to reflect change
-    setter(value);
+    dispatch(updateFilters({ [name]: value }));
 
-    // set params to reflect change
-    console.log('Name: ', name);
     searchParams.set(name, value);
+
+    // update url params
+    setSearchParams(searchParams);
+  };
+
+  const onCheck = state => e => {
+    // get button
+    const button = e.target;
+
+    // get name from button
+    const { name } = button;
+
+    // if button is checked (on) set it off
+    if (state) {
+      searchParams.delete(name);
+      setSearchParams(searchParams);
+      return dispatch(updateFilters({ [name]: !state }));
+    }
+
+    // update state to reflect change
+    dispatch(updateFilters({ [name]: !state }));
+
+    searchParams.set(name, !state);
 
     // update url params
     setSearchParams(searchParams);
@@ -222,7 +432,7 @@ function Filter({
   const [searchParams, setSearchParams] = useSearchParams();
   const [open, setOpen] = useState(false);
 
-  console.log('Current type: ', type);
+  const dispatch = useDispatch();
 
   return (
     <div className='filter relative mr-5'>
@@ -241,7 +451,7 @@ function Filter({
       {/* Filters Overlay Occupy Full Width & Height & no Padding */}
       <div className={`filter__overlay ${open ? 'filter__overlay--open' : ''}`}>
         {/* Filters Container */}
-        <div className='filter__container'>
+        <div className='filter__container h-full md:h-5/6 md:w-2/4 md:rounded-lg'>
           {/* Filter Text and Close Button */}
           <div className='filter__banner'>
             <div className='filter__banner__label font-bold text-xl tracking-wider grow'>
@@ -263,16 +473,16 @@ function Filter({
             {/* Type */}
             <FilterType
               {...{
-                type,
-                setType,
                 onSingleValueChange,
               }}
             />
+
+            {/* Price */}
+            <FilterPrice />
+
             {/* Rooms */}
             <FilterRoom
               {...{
-                rooms,
-                setRooms,
                 onSingleValueChange,
               }}
             />
@@ -280,46 +490,24 @@ function Filter({
             {/* Bathrooms */}
             <FilterBathroom
               {...{
-                externalBathrooms,
-                setExternalBathrooms,
-                internalBathrooms,
-                setInternalBathrooms,
                 onSingleValueChange,
               }}
             />
 
-            {/* Bathrooms */}
-            <FilterBathroom
+            {/* Area */}
+            <FilterArea />
+
+            {/* Other Attributes */}
+
+            <FilterExtraAttributes
               {...{
-                externalBathrooms,
-                setExternalBathrooms,
-                internalBathrooms,
-                setInternalBathrooms,
-                onSingleValueChange,
+                onCheck,
               }}
             />
-
-            {/* <RangeSlider></RangeSlider> */}
           </ul>
 
           {/* Cta btns */}
-          <div className='filter__cta-btns flex items-center'>
-            <button
-              className='bg-blue-500 tracking-wide text-white py-2 px-4 mr-5 rounded-3xl grow'
-              type='button'
-              onClick={resetFilters}
-            >
-              Réinitialiser
-            </button>
-
-            <button
-              className='bg-green-500 tracking-wide text-white py-2 px-4 rounded-3xl grow'
-              type='button'
-              onClick={e => {}}
-            >
-              Recherchez
-            </button>
-          </div>
+          <CtaButtons {...{ resetFilters }} />
         </div>
       </div>
     </div>

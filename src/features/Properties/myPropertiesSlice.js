@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchData, postData } from '../../utils/crud';
+import { fetchData, postData, updateData } from '../../utils/crud';
 import axios from 'axios';
-
-const baseURL = 'http://localhost:9090/api/v1/properties';
+import { propertiesURL } from '../../constants';
 
 const initialState = {
   loading: false,
@@ -14,7 +13,7 @@ const deletePropertyImages = async ({ id, names }) => {
   // { names: ['img1', etc...]}
   const deleteOptions = {
     withCredentials: true,
-    url: `${baseURL}/${id}/images/delete`,
+    url: `${propertiesURL}/${id}/images/delete`,
     cors: true,
     data: { names },
     method: 'POST',
@@ -32,37 +31,12 @@ const deletePropertyImages = async ({ id, names }) => {
   }
 };
 
-const updateProperty = async newProperty => {
-  // update options
-  const options = {
-    url: `${baseURL}/${newProperty.id}`,
-    data: newProperty,
-    withCredentials: true,
-    cors: true,
-    method: 'PATCH',
-  };
-
-  try {
-    // update property json data 1st
-    const response = await axios(options);
-
-    return response.data;
-  } catch (error) {
-    error = error.response
-      ? { ...error.response.data, isError: true }
-      : { message: error.message, isError: true };
-
-    // return error object
-    return error.response ? error.response.data : error;
-  }
-};
-
 const removeProperty = async propertyId => {
   const options = { withCredentials: true, cors: true, method: 'DELETE' };
 
   try {
     // send request to delete property with this id
-    await axios(`${baseURL}/${propertyId}`, options);
+    await axios(`${propertiesURL}/${propertyId}`, options);
     // since server respond with an empty object return propertyId to use and delete it from store
     return propertyId;
   } catch (error) {
@@ -90,22 +64,24 @@ const removeProperty = async propertyId => {
 
 export const fetchMyProperties = createAsyncThunk(
   'myProperties/fetchProperties',
-  fetchData(`${baseURL}/my-properties`)
+  async () => fetchData({ url: `${propertiesURL}/my-properties` })
 );
 
 export const createProperty = createAsyncThunk(
   'myProperties/createProperty',
-  postData(`${baseURL}`)
+  async data => {
+    postData({ url: `${propertiesURL}`, data });
+  }
 );
 
 export const addPropertyImages = createAsyncThunk(
-  'myProperties/addPropertyImage',
-  postData()
+  'myProperties/addPropertyImage'
+  // async () => postData({url: `${propertiesURL}/`})
 );
 
 export const updateMyProperty = createAsyncThunk(
   'myProperties/updateMyProperty',
-  updateProperty
+  async data => updateData({ url: `${propertiesURL}/${data.id}`, data })
 );
 
 export const deleteMyProperty = createAsyncThunk(

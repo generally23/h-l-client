@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { fetchData } from '../../utils/crud';
+import { propertiesURL } from '../../constants';
 
 const initialState = {
   loading: false,
@@ -9,7 +10,8 @@ const initialState = {
 
 export const fetchProperty = createAsyncThunk(
   'property/fetchProperty',
-  fetchData()
+
+  async propertyId => fetchData({ url: `${propertiesURL}/${propertyId}` })
 );
 
 const propertySlice = createSlice({

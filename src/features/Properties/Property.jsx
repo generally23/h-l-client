@@ -15,6 +15,7 @@ import {
 
 import PropertyCardDetail from './PropertyCardDetail';
 import SimpleCarousel from '../../customComponents/SimpleCarousel';
+import { maxShownThumbnail } from '../../constants';
 
 export const PropertyPreview = ({ property }) => {
   const {
@@ -185,8 +186,9 @@ const Property = ({ property }) => {
   const twitterShare = `https://twitter.com/intent/tweet?url=${propertyUrl}&text=[Text]`;
   const whatsappShare = `https://wa.me?text=${propertyUrl}`;
 
-  // max images is 5 if images > 5 else should be 3, 4, 1 etc...
-  const maxImages = images.length > 5 ? 5 : images.length;
+  // max images is maxShownThumbnail if images > maxShownThumbnail else should be 3, 4, 1 etc...
+  const maxImages =
+    images.length > maxShownThumbnail ? maxShownThumbnail : images.length;
   // thumbnails, +1 to inlcude item at that position
   const thumbnails = images.slice(0, maxImages);
 

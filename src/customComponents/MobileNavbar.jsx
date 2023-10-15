@@ -2,31 +2,31 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, Close } from '@mui/icons-material';
 
-const NoAuthNavbar = () => {
+const NoAuthNavbar = ({ onToggleMenu }) => {
   return (
     <ul className='navbar__links bg-slate-400 text-center capitalize py-5'>
       <li className='navbar__links__item'>
-        <Link className='p-2 block' to='/'>
+        <Link className='p-2 block' onClick={onToggleMenu} to='/'>
           Home
         </Link>
       </li>
       <li className='navbar__links__item'>
-        <Link className='p-2 block' to='/signup'>
+        <Link className='p-2 block' onClick={onToggleMenu} to='/signup'>
           Sign up
         </Link>
       </li>
       <li className='navbar__links__item'>
-        <Link className='p-2 block' to='/signin'>
+        <Link className='p-2 block' onClick={onToggleMenu} to='/signin'>
           Sign in
         </Link>
       </li>
       <li className='navbar__links__item'>
-        <Link className='p-2 block' to='/about'>
+        <Link className='p-2 block' onClick={onToggleMenu} to='/about'>
           About
         </Link>
       </li>
       <li className='navbar__links__item'>
-        <Link className='p-2 block' to='/help'>
+        <Link className='p-2 block' onClick={onToggleMenu} to='/help'>
           Ressources
         </Link>
       </li>
@@ -129,7 +129,7 @@ function MobileNavbar({ account }) {
         {account ? (
           <AuthNavbar {...{ account, onToggleMenu }} />
         ) : (
-          <NoAuthNavbar />
+          <NoAuthNavbar onToggleMenu={onToggleMenu} />
         )}
       </nav>
     </div>

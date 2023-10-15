@@ -23,14 +23,9 @@ const initialState = {
   error: null,
 };
 
-export const signout = createAsyncThunk(
-  'authentication/signout',
-  postData(`${baseURL}/signout`)
-);
-
 export const authenticate = createAsyncThunk(
   'authentication/authenticate',
-  fetchData(`${baseURL}/my-account`)
+  async () => await fetchData({ url: `${baseURL}/my-account` })
 );
 
 export const authSlice = createSlice({
@@ -44,16 +39,6 @@ export const authSlice = createSlice({
         fulfilled(state, payload)
       )
       .addCase(authenticate.rejected, (state, { payload }) =>
-        rejected(state, payload)
-      )
-
-      // signout
-      .addCase(signout.pending, pending)
-      .addCase(signout.fulfilled, (state, { payload }) => {
-        if (payload.isError) return { ...initialState, error: payload };
-        return { ...initialState, account: {} };
-      })
-      .addCase(signout.rejected, (state, { payload }) =>
         rejected(state, payload)
       );
   },

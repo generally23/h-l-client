@@ -16,7 +16,6 @@ function Home() {
     );
   };
   const onLocationError = error => {
-    console.error(error);
     dispatch(
       fetchProperties({
         url: `http://localhost:9090/api/v1/properties?${searchParams.toString()}`,
@@ -24,6 +23,7 @@ function Home() {
     );
   };
 
+  // run once
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       onLocationSuccess,

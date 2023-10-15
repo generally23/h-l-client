@@ -5,14 +5,16 @@ import {
   isValidPassword,
   validateFields,
 } from '../../utils/validate';
-import { signin } from './accountsSlice';
-import { useDispatch, useSelector } from 'react-redux';
+
 import { CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { alertAndRedirectBack } from '../../utils';
-
 import PasswordVisibility from './PasswordVisibility';
-import { authenticate } from './appAuthSlice';
+import { useAccount } from '../../hooks/useAccount';
+import {
+  m,
+  manageAccountAuth,
+  manageAccountAuthanageAccountAuth,
+} from '../../utils/crud';
 
 const SigninForm = ({ setSuccessMessage, setErrorMessage }) => {
   // event handlers
@@ -49,9 +51,19 @@ const SigninForm = ({ setSuccessMessage, setErrorMessage }) => {
     if (isValid) {
       // submit data to server
       const data = { email, password };
-      dispatch(signin(data));
+
+      await manageAccountAuth({
+        data,
+        path: 'signin',
+        setLoading,
+        setError,
+        setAccount,
+      });
     }
   };
+
+  const { loading, setLoading, error, setError, account, setAccount } =
+    useAccount();
 
   // input fields
   const [email, setEmail] = useState('');
@@ -61,11 +73,6 @@ const SigninForm = ({ setSuccessMessage, setErrorMessage }) => {
   const [passwordError, setPasswordError] = useState('');
 
   const [passwordVisible, setPasswordVisible] = useState(false);
-
-  // hooks
-  const dispatch = useDispatch();
-
-  const { loading, account, error } = useSelector(state => state.account);
 
   const redirect = useNavigate();
 
@@ -79,7 +86,7 @@ const SigninForm = ({ setSuccessMessage, setErrorMessage }) => {
       setTimeout(() => {
         // redirect
         redirect(-1);
-      }, 5000);
+      }, 3000);
     }
 
     if (error) {
@@ -89,8 +96,6 @@ const SigninForm = ({ setSuccessMessage, setErrorMessage }) => {
       setErrorMessage(error.message);
     }
   }, [account, error, loading]);
-
-  // useEffect(() => {});
 
   return (
     <form className='signin-form' onSubmit={handleSubmit}>

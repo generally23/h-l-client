@@ -65,8 +65,6 @@ function CreatePropertyForm({ type }) {
 
     console.log(propertyData);
 
-    return;
-
     // send data to server to create a new property
 
     const { payload: property } = await dispatch(createProperty(propertyData));

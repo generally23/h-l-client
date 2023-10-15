@@ -2,9 +2,10 @@ import React from 'react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 function PasswordVisibility({ passwordVisible, setPasswordVisible }) {
-  const togglePasswordVisibility = e => {
+  const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
+
   return (
     <button
       type='button'

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import { useSearchParams } from 'react-router-dom';
 import { fetchProperties, selectProperties } from '../../propertiesSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,6 +6,7 @@ import Paginate from './Paginate';
 import Sort from './Sort';
 import Search from './Search';
 import Filter from './Filter';
+import { resetFiltersToDefault } from '../../../Filters';
 
 function ControlForm({ children }) {
   const onPageChange = (e, value) => {
@@ -78,14 +78,7 @@ function ControlForm({ children }) {
   };
 
   const resetFilters = e => {
-    // update Filter state
-    setType('');
-    setRooms('');
-    setExternalBathrooms('');
-    setInternalBathrooms('');
-    setFenced(false);
-
-    // update the url and avoid passing a filters object
+    dispatch(resetFiltersToDefault());
     // order goes search, filter, sort, paginate
     setSearchParams({ search, sortBy, page });
     // submit the form
@@ -104,17 +97,7 @@ function ControlForm({ children }) {
   const [search, setSearch] = useState(searchParams.get('search') || '');
 
   // Filter
-  const [type, setType] = useState(searchParams.get('type') || '');
-  const [rooms, setRooms] = useState(searchParams.get('rooms') || '');
-  const [externalBathrooms, setExternalBathrooms] = useState(
-    searchParams.get('externalBathrooms') || ''
-  );
-  const [internalBathrooms, setInternalBathrooms] = useState(
-    searchParams.get('internalBathrooms') || ''
-  );
-
-  // checkboxes
-  let [fenced, setFenced] = useState(searchParams.get('fenced'));
+  // this is managed by redux
 
   // Sort
   const [sortBy, setSortBy] = useState(searchParams.get('sortBy') || '');
@@ -128,19 +111,7 @@ function ControlForm({ children }) {
         {/* Search */}
         <Search {...{ search, onSearchChange, handleSearch }} />
         {/* Filter */}
-        <Filter
-          {...{
-            resetFilters,
-            type,
-            setType,
-            rooms,
-            setRooms,
-            externalBathrooms,
-            setExternalBathrooms,
-            internalBathrooms,
-            setInternalBathrooms,
-          }}
-        />
+        <Filter resetFilters={resetFilters} />
         {/* Sort */}
         <Sort
           {...{

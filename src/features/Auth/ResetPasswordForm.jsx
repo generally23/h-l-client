@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { isValidPassword, validateFields } from '../../utils/validate';
-import { useDispatch, useSelector } from 'react-redux';
-import { resetMyPassword } from './accountsSlice';
 import Button from '../../customComponents/Button';
 import { useNavigate, useParams } from 'react-router-dom';
+import { manageAccountAuth } from '../../utils/crud';
+import { useAccount } from '../../hooks/useAccount';
 
 function ResetPasswordForm({ setSuccessMessage, setErrorMessage }) {
   const onPasswordChange = e => setPassword(e.target.value);
@@ -39,17 +39,29 @@ function ResetPasswordForm({ setSuccessMessage, setErrorMessage }) {
     if (isValid) {
       // submit data to server
       const data = { password, newPassword, resetToken };
-      dispatch(resetMyPassword(data));
+
+      // url to sign in
+      const path = `reset-my-password/${resetToken}`;
+      // action being performed
+      const method = 'update';
+
+      manageAccountAuth({
+        data,
+        path,
+        setLoading,
+        setError,
+        setAccount,
+        method,
+      });
     }
   };
-
-  const dispatch = useDispatch();
-
-  const { loading, account, error } = useSelector(state => state.account);
 
   const redirect = useNavigate();
 
   const { resetToken } = useParams();
+
+  const { loading, setLoading, error, setError, account, setAccount } =
+    useAccount();
 
   useEffect(() => {
     if (account) {

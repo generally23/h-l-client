@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { selectProperty } from '../features/Properties/propertySlice';
 import { CustomTabPanel } from '../customComponents/CustomTab';
 import LightGallery from 'lightgallery/react';
-import { formatMoney, formatSrset } from '../utils';
+import { formatMoney } from '../utils';
 
 // import styles
 import 'lightgallery/css/lightgallery.css';
@@ -62,7 +62,7 @@ function Property({ property }) {
                   className='block w-full'
                   alt='Property Image'
                   src={`${img.src}`}
-                  srcSet={formatSrset(img.srcset)}
+                  srcSet={img.srcset}
                 />
               </a>
             ))}

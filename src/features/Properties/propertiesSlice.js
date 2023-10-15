@@ -13,7 +13,7 @@ const baseURL = 'http://localhost:9090/api/v1/properties';
 
 export const fetchProperties = createAsyncThunk(
   'properties/fetchProperties',
-  fetchData(baseURL)
+  async () => fetchData({ url: baseURL })
 );
 
 const propertySlice = createSlice({

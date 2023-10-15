@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import { formatMoney } from '../utils';
 
@@ -19,7 +18,7 @@ export default function RangeSlider() {
 
   return (
     <>
-      <input
+      {/* <input
         type='text'
         id='min'
         value={formatMoney(Math.round((minValue / 100) * max))}
@@ -30,16 +29,18 @@ export default function RangeSlider() {
         id='max'
         value={formatMoney(Math.round((maxValue / 100) * max))}
         onChange={e => console.log(e)}
+      /> */}
+      {/* <Box sx={{ width: 300 }}> */}
+      <Slider
+        value={value}
+        onChange={handleChange}
+        color='secondary'
+        valueLabelDisplay='auto'
+        size='medium'
+        // use this format label into something like $currency
+        valueLabelFormat={value => formatMoney(value * 1000) + 'K'}
       />
-      <Box sx={{ width: 300 }}>
-        <Slider
-          getAriaLabel={() => 'Temperature range'}
-          value={value}
-          onChange={handleChange}
-          valueLabelDisplay='off'
-          size='medium'
-        />
-      </Box>
+      {/* </Box> */}
     </>
   );
 }

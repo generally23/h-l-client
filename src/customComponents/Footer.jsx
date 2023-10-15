@@ -18,13 +18,13 @@ const AuthNavbar = account => {
   );
 };
 
-const NoAuthNavbar = account => {
+const NoAuthNavbar = () => {
   return (
     <>
-      <Link to='' className='footer__navigation__link'>
+      <Link to='/signup' className='footer__navigation__link'>
         Signup
       </Link>
-      <Link to='' className='footer__navigation__link'>
+      <Link to='/signin' className='footer__navigation__link'>
         Signin
       </Link>
     </>
@@ -167,7 +167,7 @@ const Footer = () => {
               <span className='mr-2'>
                 <Place fontSize='small' />
               </span>
-              Addresse:{' '}
+              Addresse:
               <address className='inline-block'>Bambeto Magasin</address>
             </div>
           </div>

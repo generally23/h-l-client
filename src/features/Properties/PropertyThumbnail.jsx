@@ -1,16 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { formatSrset } from '../../utils';
 
 // Abstract Component. Put here to avoid passing props
-const Replia = ({ src, formattedSrcSet, propertyId }) => {
+const Replia = ({ src, srcSet, propertyId }) => {
   return (
     <>
       <div className='property__thumbnail__image h-full w-full'>
         <img
           className='property__thumbnail__image__photo object-cover blur-md h-full'
           src={src}
-          srcSet={formattedSrcSet}
+          srcSet={srcSet}
           alt='Property Image'
         />
       </div>
@@ -27,27 +26,22 @@ const Replia = ({ src, formattedSrcSet, propertyId }) => {
   );
 };
 
-function PropertyThumbnail({
-  src,
-  srcset = '',
-  propertyId,
-  isReplica = false,
-}) {
-  const formattedSrcSet = formatSrset(srcset);
+function PropertyThumbnail({ src, srcSet, propertyId, isReplica = false }) {
+  // const formattedSrcSet = formatSrset(srcSet);
 
   // in case source is generated via an uploaded file by user
   const revokeUrl = () => {
-    URL.revokeObjectURL(src);
+    // URL.revokeObjectURL(src);
   };
 
   return isReplica ? (
-    <Replia {...{ src, propertyId, formattedSrcSet }} />
+    <Replia {...{ src, propertyId, srcSet }} />
   ) : (
     <div className='property__thumbnail__image h-full'>
       <img
         className='property__thumbnail__image__photo object-cover h-full'
         src={src}
-        srcSet={formattedSrcSet}
+        srcSet={srcSet} //{formattedSrcSet}
         sizes='min-width(600px) 50vw min-width(1200px) calc(100vw / 3) 100w'
         alt='Property Image'
         onLoad={revokeUrl}

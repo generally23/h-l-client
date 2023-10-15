@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../customComponents/Button';
 import { forgotMyPassword } from './accountsSlice';
+import { useAccount } from '../../hooks/useAccount';
+import { manageAccountAuth } from '../../utils/crud';
 
 function ForgotPasswordForm({ setSuccessMessage, setErrorMessage }) {
   const onEmailChange = e => setEmail(e.target.value);
@@ -25,15 +27,21 @@ function ForgotPasswordForm({ setSuccessMessage, setErrorMessage }) {
     const isValid = validateFields(emailField);
 
     if (isValid) {
-      // submit data to server
       const data = { email };
-      dispatch(forgotMyPassword(data));
+      const path = 'forgot-my-password';
+      // send email forgot my password request
+      manageAccountAuth({
+        data,
+        path,
+        setLoading,
+        setError,
+        setAccount,
+      });
     }
   };
 
-  const dispatch = useDispatch();
-
-  const { loading, account, error } = useSelector(state => state.account);
+  const { loading, setLoading, error, setError, account, setAccount } =
+    useAccount();
 
   const redirect = useNavigate();
 
