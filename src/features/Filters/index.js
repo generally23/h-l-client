@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { toBoolean } from '../../utils/index';
+import { inputNames } from '../../constants';
 
 // default state, filters or filter object is empty
 const defaultState = {};
@@ -10,17 +11,33 @@ const searchParams = new URLSearchParams(window.location.search);
 // helper function to get parameters easily
 const getParam = name => searchParams.get(name);
 
+//
+const not = (value1, value2) => {
+  // if (!value1) value2;
+};
+
+const rooms = getParam(inputNames.rooms);
+const externalBathrooms = getParam(inputNames.externalBathrooms);
+const internalBathrooms = getParam(inputNames.internalBathrooms);
+
 const initialState = {
-  type: getParam('type'),
-  rooms: getParam('rooms'),
-  externalBathrooms: getParam('externalBathrooms'),
-  internalBathrooms: getParam('internalBathrooms'),
-  fenced: toBoolean(getParam('fenced')),
-  hasGarage: toBoolean(getParam('hasGarage')),
-  hasCuisine: toBoolean(getParam('hasCuisine')),
-  hasLivingRoom: toBoolean(getParam('hasLivingRoom')),
-  hasDiningRoom: toBoolean(getParam('hasDiningRoom')),
-  hasPool: toBoolean(getParam('hasPool')),
+  type: getParam(inputNames.type),
+  rooms,
+  [inputNames.minRooms]: !rooms ? getParam(inputNames.minRooms) : null,
+  externalBathrooms,
+  internalBathrooms,
+  [inputNames.minExternalBathrooms]: !externalBathrooms
+    ? getParam(inputNames.minExternalBathrooms)
+    : null,
+  [inputNames.minInternalBathrooms]: !internalBathrooms
+    ? getParam(inputNames.minInternalBathrooms)
+    : null,
+  fenced: toBoolean(getParam(inputNames.fenced)),
+  hasGarage: toBoolean(getParam(inputNames.hasGarage)),
+  hasCuisine: toBoolean(getParam(inputNames.asCuisine)),
+  hasLivingRoom: toBoolean(getParam(inputNames.hasLivingRoom)),
+  hasDiningRoom: toBoolean(getParam(inputNames.hasDiningRoom)),
+  hasPool: toBoolean(getParam(inputNames.hasPool)),
 };
 
 const filterSlice = createSlice({
@@ -33,4 +50,7 @@ const filterSlice = createSlice({
 });
 
 export const { resetFiltersToDefault, updateFilters } = filterSlice.actions;
+
+export const selectFilters = state => state.filters;
+
 export default filterSlice.reducer;

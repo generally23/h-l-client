@@ -10,13 +10,14 @@ export const usePropertyForm = property => {
   const [title, setTitle] = useState(property.title || '');
   const [price, setPrice] = useState(property.price || 0);
   const [description, setDescription] = useState(property.description || '');
-  const [tags, setTags] = useState(property.tags?.split(' ') || []);
+  const [tags, setTags] = useState(property.tags || []);
 
   // Area Step State
   const [area, setArea] = useState(property.area || '');
   const [areaBuilt, setAreaBuilt] = useState(property.areaBuilt || '');
+
   const [yearBuilt, setYearBuilt] = useState(
-    dayjs(property.yearBuilt) || dayjs(new Date())
+    dayjs(property.yearBuilt ? `${property.yearBuilt}-01-01` : new Date())
   );
   const [fenced, setFenced] = useState(property.fenced || false);
 

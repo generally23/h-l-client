@@ -9,6 +9,7 @@ import {
   isValidTitle,
   validateFields,
 } from '../../../../../utils/validate';
+import { inputNames } from '../../../../../constants';
 
 // 1st step basic step
 function Basic({
@@ -106,7 +107,7 @@ function Basic({
         <div className='property-form__title mb-10'>
           <TextField
             id='title'
-            name='title'
+            name={inputNames.title}
             label='Titre'
             variant='outlined'
             helperText={titleError}
@@ -123,7 +124,7 @@ function Basic({
         <div className='property-form__price mb-10'>
           <TextField
             id='price'
-            name='price'
+            name={inputNames.price}
             label='Prix'
             variant='outlined'
             value={formatMoney(price)}
@@ -142,7 +143,7 @@ function Basic({
         <div className='property-form__description mb-10'>
           <TextField
             id='outlined-textarea'
-            name='description'
+            name={inputNames.description}
             label='Description'
             multiline
             minRows={5}
@@ -158,7 +159,9 @@ function Basic({
 
         {/* Tags */}
         <div className='property-form__tags mb-10'>
-          <input type='hidden' name='tags' value={tags.join(' ')} />
+          {/* Create this input because MUI Input chips does not assign a value to it's input */}
+          <input type='hidden' name={inputNames.tags} value={tags} />
+
           <MuiChipsInput
             value={tags}
             onChange={onTagsChange}

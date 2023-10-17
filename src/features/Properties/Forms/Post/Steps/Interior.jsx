@@ -1,6 +1,7 @@
 import { FormControlLabel, TextField, Checkbox } from '@mui/material';
 import React, { useState } from 'react';
 import Button from '../../../../../customComponents/Button';
+import { inputNames } from '../../../../../constants';
 
 const BathroomInput = ({
   externalBathrooms,
@@ -17,7 +18,7 @@ const BathroomInput = ({
         <TextField
           id='externalBathrooms'
           label='Douches Externes'
-          name='externalBathrooms'
+          name={inputNames.externalBathrooms}
           value={externalBathrooms}
           onChange={onBathroomChange(setExternalBathrooms)}
           type='number'
@@ -26,12 +27,13 @@ const BathroomInput = ({
           fullWidth
         />
       </div>
+
       {/* Internal */}
       <div className='property-form__bathroom__input grow'>
         <TextField
           id='internalBathrooms'
           label='Douches Internes'
-          name='internalBathrooms'
+          name={inputNames.internalBathrooms}
           value={internalBathrooms}
           onChange={onBathroomChange(setInternalBathrooms)}
           type='number'
@@ -97,7 +99,7 @@ function Interior({
           <TextField
             id='rooms'
             label='Chambres'
-            name='rooms'
+            name={inputNames.rooms}
             type='number'
             value={rooms}
             onChange={onRoomsChange}
@@ -139,28 +141,10 @@ function Interior({
               label='Garage'
               onChange={onCheckboxChange(setHasGarage, hasGarage)}
               checked={hasGarage}
-              name='hasGarage'
+              name={inputNames.hasGarage}
               value={hasGarage}
             />
           </div>
-
-          {/* {hasGarage && (
-            <div className='property-form__garage__input grow'>
-              <TextField
-                id='garages'
-                label='Garages'
-                name='garages'
-                value={garages}
-                onChange={onTextChange(setGarages)}
-                type='number'
-                placeholder='Garages'
-                // helperText='Une maison doit avoir des garages'
-                InputProps={{ inputProps: { min: 0 } }}
-                required
-                fullWidth
-              />
-            </div>
-          )} */}
         </div>
 
         {/* Living Room */}
@@ -171,7 +155,7 @@ function Interior({
               label='Salon'
               onChange={onCheckboxChange(setHasLivingRoom, hasLivingRoom)}
               checked={hasLivingRoom}
-              name='hasLivingRoom'
+              name={inputNames.hasLivingRoom}
               value={hasLivingRoom}
             />
           </div>
@@ -201,7 +185,7 @@ function Interior({
             <FormControlLabel
               control={<Checkbox />}
               label='Sale a manger'
-              name='hasDingRoom'
+              name={inputNames.hasDiningRoom}
               value={hasDiningRoom}
               onChange={onCheckboxChange(setHasDiningRoom, hasDiningRoom)}
               checked={hasDiningRoom}
@@ -233,7 +217,7 @@ function Interior({
             <FormControlLabel
               control={<Checkbox />}
               label='Cuisine'
-              name='hasCuisine'
+              name={inputNames.hasCuisine}
               value={hasCuisine}
               onChange={onCheckboxChange(sethasCuisine, hasCuisine)}
               checked={hasCuisine}
@@ -264,7 +248,7 @@ function Interior({
             <FormControlLabel
               control={<Checkbox />}
               label='Piscine'
-              name='hasPool'
+              name={inputNames.hasPool}
               value={hasPool}
               onChange={onCheckboxChange(setHasPool, hasPool)}
               checked={hasPool}

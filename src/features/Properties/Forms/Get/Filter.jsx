@@ -4,18 +4,23 @@ import { Close, FilterAlt } from '@mui/icons-material';
 import { useSearchParams } from 'react-router-dom';
 import { InputAdornment, TextField } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateFilters } from '../../../Filters/index.js';
+import { selectFilters, updateFilters } from '../../../Filters/index.js';
+import { inputNames } from '../../../../constants.js';
 
-const FilterButtons = ({ buttons, state, onSingleValueChange }) => {
-  return buttons.map(({ name, value, content }) => (
+const FilterButtons = ({ sourceObject, state, onSingleValueChange }) => {
+  const { commonName, buttons } = sourceObject;
+
+  return buttons.map(({ name, value, content, deleteParam }) => (
     <button
       key={value}
       type='button'
       className={`filter__btn capitalize ${
         state === value ? 'filter__btn--active' : ''
       }`}
-      name={name}
+      name={name ? name : commonName}
       value={value}
+      // delete-param used to help maintain a single value for the rooms input
+      data-delete-param={deleteParam || sourceObject.deleteParam}
       onClick={onSingleValueChange(state)}
     >
       {content || value}
@@ -24,12 +29,15 @@ const FilterButtons = ({ buttons, state, onSingleValueChange }) => {
 };
 
 const FilterType = ({ onSingleValueChange }) => {
-  const buttons = [
-    { name: 'type', value: 'house', content: 'Maison' },
-    { name: 'type', value: 'land', content: 'Terrain' },
-  ];
+  const sourceObject = {
+    commonName: inputNames.type,
+    buttons: [
+      { value: 'house', content: 'Maison' },
+      { value: 'land', content: 'Terrain' },
+    ],
+  };
 
-  const { type } = useSelector(state => state.filters);
+  const { type } = useSelector(selectFilters);
 
   return (
     <li className='filter__list__item'>
@@ -38,14 +46,16 @@ const FilterType = ({ onSingleValueChange }) => {
 
       {/* Filter Values */}
       <div className='filter__value'>
-        <FilterButtons {...{ buttons, state: type, onSingleValueChange }} />
+        <FilterButtons
+          {...{ sourceObject, state: type, onSingleValueChange }}
+        />
       </div>
     </li>
   );
 };
 
 const FilterPrice = () => {
-  const {} = useSelector(state => state.filters);
+  const {} = useSelector(selectFilters);
   return (
     <li className='filter__list__item'>
       {/* Filter Name */}
@@ -98,14 +108,21 @@ const FilterPrice = () => {
 };
 
 const FilterRoom = ({ onSingleValueChange }) => {
-  const { rooms } = useSelector(state => state.filters);
-  const buttons = [
-    { name: 'rooms', value: '1' },
-    { name: 'rooms', value: '2' },
-    { name: 'rooms', value: '3' },
-    { name: 'rooms', value: '4' },
-    { name: 'rooms[gte]', value: '5', content: '5+' },
-  ];
+  const { rooms, [inputNames.minRooms]: minRooms } = useSelector(selectFilters);
+
+  // deleteParam used to help maintain a single value for the rooms input
+  const sourceObject = {
+    // used to avoid repeating rooms name for every button
+    commonName: 'rooms',
+    deleteParam: 'rooms[gte]',
+    buttons: [
+      { value: '1' },
+      { value: '2' },
+      { value: '3' },
+      { value: '4' },
+      { name: 'rooms[gte]', value: '5', content: '5+', deleteParam: 'rooms' },
+    ],
+  };
 
   return (
     <li className='filter__list__item'>
@@ -116,8 +133,8 @@ const FilterRoom = ({ onSingleValueChange }) => {
       <div className='filter__value'>
         <FilterButtons
           {...{
-            buttons,
-            state: rooms,
+            sourceObject,
+            state: rooms || minRooms,
             onSingleValueChange,
           }}
         />
@@ -127,21 +144,46 @@ const FilterRoom = ({ onSingleValueChange }) => {
 };
 
 const FilterBathroom = ({ onSingleValueChange }) => {
-  const { externalBathrooms, internalBathrooms } = useSelector(
-    state => state.filters
-  );
+  const filters = useSelector(selectFilters);
+  const { externalBathrooms, internalBathrooms } = filters;
 
-  const externalBathButtons = [
-    { name: 'externalBathrooms', value: '1' },
-    { name: 'externalBathrooms', value: '2' },
-    { name: 'externalBathrooms', value: '3', content: '3+' },
-  ];
+  // these are input names
+  const { minExternalBathrooms, minInternalBathrooms } = inputNames;
 
-  const internalBathButtons = [
-    { name: 'internalBathrooms', value: '1' },
-    { name: 'internalBathrooms', value: '2' },
-    { name: 'internalBathrooms', value: '3', content: '3+' },
-  ];
+  const minExtBath = filters[minExternalBathrooms];
+  const minIntBath = filters[minInternalBathrooms];
+
+  console.log('minExtBathroom: ', minExtBath);
+
+  const externalBathButtons = {
+    commonName: inputNames.externalBathrooms,
+    deleteParam: minExternalBathrooms,
+    buttons: [
+      { value: '1' },
+      { value: '2' },
+      {
+        name: minExternalBathrooms,
+        value: '3',
+        content: '3+',
+        deleteParam: inputNames.externalBathrooms,
+      },
+    ],
+  };
+
+  const internalBathButtons = {
+    commonName: inputNames.internalBathrooms,
+    deleteParam: minInternalBathrooms,
+    buttons: [
+      { value: '1' },
+      { value: '2' },
+      {
+        name: minInternalBathrooms,
+        value: '3',
+        content: '3+',
+        deleteParam: inputNames.internalBathrooms,
+      },
+    ],
+  };
 
   return (
     <li className='filter__list__item'>
@@ -161,8 +203,8 @@ const FilterBathroom = ({ onSingleValueChange }) => {
           <div className='filter__value'>
             <FilterButtons
               {...{
-                buttons: externalBathButtons,
-                state: externalBathrooms,
+                sourceObject: externalBathButtons,
+                state: externalBathrooms || minExtBath,
                 onSingleValueChange,
               }}
             />
@@ -178,8 +220,8 @@ const FilterBathroom = ({ onSingleValueChange }) => {
           <div className='filter__value'>
             <FilterButtons
               {...{
-                buttons: internalBathButtons,
-                state: internalBathrooms,
+                sourceObject: internalBathButtons,
+                state: internalBathrooms || minIntBath,
                 onSingleValueChange,
               }}
             />
@@ -277,7 +319,7 @@ const FilterExtraAttributes = ({ onCheck }) => {
           className={`filter__btn capitalize ${
             hasLivingRoom ? 'filter__btn--checked' : ''
           }`}
-          name='hasLivingRoom'
+          name={inputNames.hasLivingRoom}
           value={hasLivingRoom}
           onClick={onCheck(hasLivingRoom)}
         >
@@ -290,7 +332,7 @@ const FilterExtraAttributes = ({ onCheck }) => {
           className={`filter__btn capitalize ${
             hasGarage ? 'filter__btn--checked' : ''
           }`}
-          name='hasGarage'
+          name={inputNames.hasGarage}
           value={hasGarage}
           onClick={onCheck(hasGarage)}
         >
@@ -303,7 +345,7 @@ const FilterExtraAttributes = ({ onCheck }) => {
           className={`filter__btn capitalize ${
             hasDiningRoom ? 'filter__btn--checked' : ''
           }`}
-          name='hasDiningRoom'
+          name={inputNames.hasDiningRoom}
           value={hasDiningRoom}
           onClick={onCheck(hasDiningRoom)}
         >
@@ -316,7 +358,7 @@ const FilterExtraAttributes = ({ onCheck }) => {
           className={`filter__btn capitalize ${
             hasCuisine ? 'filter__btn--checked' : ''
           }`}
-          name='hasCuisine'
+          name={inputNames.hasCuisine}
           value={hasCuisine}
           onClick={onCheck(hasCuisine)}
         >
@@ -329,7 +371,7 @@ const FilterExtraAttributes = ({ onCheck }) => {
           className={`filter__btn capitalize ${
             fenced ? 'filter__btn--checked' : ''
           }`}
-          name='fenced'
+          name={inputNames.fenced}
           value={fenced}
           onClick={onCheck(fenced)}
         >
@@ -342,7 +384,7 @@ const FilterExtraAttributes = ({ onCheck }) => {
           className={`filter__btn capitalize ${
             hasPool ? 'filter__btn--checked' : ''
           }`}
-          name='hasPool'
+          name={inputNames.hasPool}
           value={hasPool}
           onClick={onCheck(hasPool)}
         >
@@ -353,7 +395,7 @@ const FilterExtraAttributes = ({ onCheck }) => {
   );
 };
 
-const CtaButtons = ({ resetFilters }) => {
+const CtaButtons = ({ resetFilters, onSearch }) => {
   return (
     <div className='filter__cta-btns flex items-center'>
       <button
@@ -367,7 +409,7 @@ const CtaButtons = ({ resetFilters }) => {
       <button
         className='bg-green-500 tracking-wide text-white py-2 px-4 rounded-3xl grow'
         type='button'
-        onClick={e => {}}
+        onClick={onSearch}
       >
         Recherchez
       </button>
@@ -379,24 +421,35 @@ function Filter({ resetFilters }) {
   const toggleFilter = e => {
     setOpen(!open);
 
-    // open is last state so !open is now the new state
-    document.body.style.overflow = !open ? 'hidden' : '';
+    toggleBodyOverflow();
   };
 
   const onSingleValueChange = state => e => {
-    e.preventDefault();
     // get button
     const button = e.target;
     // get name and value from button
     const { name, value } = button;
+    // buttons that use different values for state has this variable to help delete the other variable
+    // ex rooms & rooms[gte] are maintained by 2 state vars since only 1 value is allowed, they need to be in sync
+    const { deleteParam } = button.dataset;
 
     // if value hasn't changed empty it to reset the filter and stop here
     if (state === value) {
+      // delete the filter name form searchParams
       searchParams.delete(name);
+      // update searchParams
       setSearchParams(searchParams);
+      // dispatch action to store
       return dispatch(updateFilters({ [name]: '' }));
     }
 
+    // if there's a parameter to delete remove it
+    if (deleteParam) {
+      // remove from store
+      dispatch(updateFilters({ [deleteParam]: null }));
+      // remove param from searchParams
+      searchParams.delete(deleteParam);
+    }
     // update state to reflect change
     dispatch(updateFilters({ [name]: value }));
 
@@ -429,6 +482,20 @@ function Filter({ resetFilters }) {
     setSearchParams(searchParams);
   };
 
+  const onSearch = e => {
+    const button = e.target.closest('button');
+
+    setOpen(!open);
+    toggleBodyOverflow();
+
+    button.form.requestSubmit();
+  };
+
+  const toggleBodyOverflow = () => {
+    // open is last state so !open is now the new state
+    document.body.style.overflow = !open ? 'hidden' : '';
+  };
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [open, setOpen] = useState(false);
 
@@ -451,7 +518,7 @@ function Filter({ resetFilters }) {
       {/* Filters Overlay Occupy Full Width & Height & no Padding */}
       <div className={`filter__overlay ${open ? 'filter__overlay--open' : ''}`}>
         {/* Filters Container */}
-        <div className='filter__container h-full md:h-5/6 md:w-2/4 md:rounded-lg'>
+        <div className='filter__container h-full md:h-5/6 md:w-3/4 md:rounded-xl'>
           {/* Filter Text and Close Button */}
           <div className='filter__banner'>
             <div className='filter__banner__label font-bold text-xl tracking-wider grow'>
@@ -507,7 +574,7 @@ function Filter({ resetFilters }) {
           </ul>
 
           {/* Cta btns */}
-          <CtaButtons {...{ resetFilters }} />
+          <CtaButtons {...{ resetFilters, onSearch }} />
         </div>
       </div>
     </div>

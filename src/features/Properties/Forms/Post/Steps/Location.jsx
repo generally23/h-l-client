@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Button from '../../../../../customComponents/Button';
 import { isValidAddress, validateFields } from '../../../../../utils/validate';
 import ErrorAlert from '../../../../../customComponents/ErrorAlert';
+import { inputNames } from '../../../../../constants';
 
 function Location({
   type,
@@ -48,7 +49,7 @@ function Location({
           <TextField
             id='address'
             label='Lieu'
-            name='address'
+            name={inputNames.address}
             value={address}
             onChange={onAddressChange}
             required

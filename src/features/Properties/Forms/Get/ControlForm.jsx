@@ -31,13 +31,11 @@ function ControlForm({ children }) {
   const handleFormSubmit = async e => {
     e.preventDefault();
 
-    console.log('form submitted');
+    console.log('Submitted with Query: ', searchParams.toString());
 
-    dispatch(
-      fetchProperties({
-        url: `http://localhost:9090/api/v1/properties?${searchParams.toString()}`,
-      })
-    );
+    const queryString = searchParams.toString();
+
+    dispatch(fetchProperties({ queryString }));
 
     console.log(searchParams.toString());
   };
@@ -82,7 +80,7 @@ function ControlForm({ children }) {
     // order goes search, filter, sort, paginate
     setSearchParams({ search, sortBy, page });
     // submit the form
-    e.target.form.requestSubmit();
+    // e.target.form.requestSubmit();
   };
 
   const dispatch = useDispatch();

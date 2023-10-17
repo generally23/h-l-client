@@ -14,6 +14,7 @@ import {
   isValidYearBuilt,
   validateFields,
 } from '../../../../../utils/validate';
+import { inputNames } from '../../../../../constants';
 
 function Area({
   type,
@@ -90,6 +91,7 @@ function Area({
   };
 
   const [step] = useState(2);
+  console.log('Year Built', yearBuilt);
 
   // Errors
   const [areaError, setAreaError] = useState('');
@@ -108,7 +110,7 @@ function Area({
         <div className='property-form__area mb-10'>
           <TextField
             id='area'
-            name='area'
+            name={inputNames.area}
             value={area}
             onChange={onAreaChange}
             label='Superficie'
@@ -131,7 +133,7 @@ function Area({
           <div className='property-form__area-built mb-10'>
             <TextField
               id='area-built'
-              name='areaBuilt'
+              name={inputNames.areaBuilt}
               value={areaBuilt}
               onChange={onAreaBuiltChange}
               label='Superficie Batie'
@@ -154,7 +156,11 @@ function Area({
         {type === 'house' && (
           <div className='property-form__built-year mb-10'>
             {/* custom hidden input to replace date picker's since it has no name */}
-            <input type='hidden' name='yearBuilt' value={dayjs(yearBuilt).$y} />
+            <input
+              type='hidden'
+              name={inputNames.yearBuilt}
+              value={dayjs(yearBuilt).$y}
+            />
             {/* Date Picker */}
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
@@ -179,7 +185,7 @@ function Area({
         <div className='property-form__fenced flex mb-10'>
           <div className='property-form__fenced__checkbox'>
             <FormControlLabel
-              name='fenced'
+              name={inputNames.fenced}
               value={fenced}
               checked={fenced}
               onChange={onFencedChange}

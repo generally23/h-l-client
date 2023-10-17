@@ -5,6 +5,7 @@ import { selectProperty } from '../features/Properties/propertySlice';
 import { CustomTabPanel } from '../customComponents/CustomTab';
 import LightGallery from 'lightgallery/react';
 import { formatMoney } from '../utils';
+import { Tags } from '../features/Properties/Property';
 
 // import styles
 import 'lightgallery/css/lightgallery.css';
@@ -56,24 +57,26 @@ function Property({ property }) {
             X
           </button>
           <LightGallery speed={500} plugins={[lgThumbnail, lgZoom]}>
-            {property.images.map(img => (
-              <a href={`${img.src}`} key={img.src}>
+            {property.images.map(({ src, srcset }) => (
+              <a src={src} key={src} data-srcset={srcset}>
                 <img
                   className='block w-full'
                   alt='Property Image'
-                  src={`${img.src}`}
-                  srcSet={img.srcset}
+                  src={src}
+                  srcSet={srcset}
                 />
               </a>
             ))}
           </LightGallery>
         </div>
+        {/* title */}
         <h1 className='property__title mb-5 font-normal text-3xl'>
           {property.title} Guinee conakry
         </h1>
+        {/* Thumbnail */}
         <figure className='property__thumbnail relative'>
           <img
-            className='h-80 block w-full'
+            className='block w-full'
             src={`${property.images[0].src}`}
             alt=''
           />
@@ -130,8 +133,8 @@ function Property({ property }) {
               <li className='mb-3'>Construit en: {property?.yearBuilt}</li>
 
               <li className='tags'>
-                <ul className='p-5 bg-black/80 rounded-lg'>
-                  {property.tags.split(' ').map(tag => (
+                {/* <ul className='p-5 bg-black/80 rounded-lg'>
+                  {property.tags.map(tag => (
                     <li
                       key={tag}
                       className='inline-block bg-green-400/70 mr-2 px-2 mb-2'
@@ -139,7 +142,8 @@ function Property({ property }) {
                       {tag}
                     </li>
                   ))}
-                </ul>
+                </ul> */}
+                <Tags tags={property.tags} />
               </li>
             </CustomTabPanel>
             {/* Description */}

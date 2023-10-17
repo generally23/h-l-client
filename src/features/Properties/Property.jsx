@@ -16,6 +16,7 @@ import {
 import PropertyCardDetail from './PropertyCardDetail';
 import SimpleCarousel from '../../customComponents/SimpleCarousel';
 import { maxShownThumbnail } from '../../constants';
+import { nanoid } from '@reduxjs/toolkit';
 
 export const PropertyPreview = ({ property }) => {
   const {
@@ -116,11 +117,7 @@ const Title = ({ title, id }) => {
 
 // Tags
 
-const Tags = ({ tags }) => {
-  // tags is sometimes a string when property is being rendered but an array when being previewed
-
-  if (typeof tags === 'string') tags = tags.split(' ');
-
+export const Tags = ({ tags }) => {
   return (
     tags && (
       <div className='property__tags bg-neutral-100'>
@@ -128,7 +125,7 @@ const Tags = ({ tags }) => {
           <ul className='property__tags__list flex'>
             {tags.map(tag => (
               <li
-                key={tag}
+                key={nanoid()}
                 className='inline-block bg-green-400/70 [&:not(:last-child)]:mr-3 px-2 py-1'
               >
                 #{tag}

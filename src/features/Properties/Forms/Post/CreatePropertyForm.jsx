@@ -43,8 +43,7 @@ function CreatePropertyForm({ type }) {
       title,
       price,
       description,
-      // tags is an array join all values
-      tags: tags.join(' '),
+      tags,
       area,
       areaBuilt,
       // make sure to get the number since year built is an object

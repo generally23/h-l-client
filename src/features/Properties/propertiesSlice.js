@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { fetchData, postData } from '../../utils/crud';
-import axios from 'axios';
+import { propertiesURL } from '../../constants';
 
 const initialState = {
   loading: true,
@@ -8,12 +8,10 @@ const initialState = {
   error: null,
 };
 
-// const baseURL = 'http://192.168.1.196:9090/api/v1/properties';
-const baseURL = 'http://localhost:9090/api/v1/properties';
-
 export const fetchProperties = createAsyncThunk(
   'properties/fetchProperties',
-  async () => fetchData({ url: baseURL })
+  async ({ queryString, headers }) =>
+    fetchData({ url: `${propertiesURL}?${queryString}`, headers })
 );
 
 const propertySlice = createSlice({

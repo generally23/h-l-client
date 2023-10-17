@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Properties from '../features/Properties/Properties';
 import { fetchProperties } from '../features/Properties/propertiesSlice';
 import { useDispatch } from 'react-redux';
@@ -6,21 +6,25 @@ import { useSearchParams } from 'react-router-dom';
 
 function Home() {
   const onLocationSuccess = ({ coords }) => {
-    const Latitude = coords.latitude;
-    const Longitude = coords.longitude;
+    const { latitude } = coords;
+    const { longitude } = coords;
+
+    setLongitude(longitude);
+    setLatitude(latitude);
+
+    const queryString = searchParams.toString();
+
     dispatch(
       fetchProperties({
-        url: `http://localhost:9090/api/v1/properties?${searchParams.toString()}`,
-        headers: { Longitude, Latitude },
+        queryString,
+        headers: { longitude, latitude },
       })
     );
   };
+
   const onLocationError = error => {
-    dispatch(
-      fetchProperties({
-        url: `http://localhost:9090/api/v1/properties?${searchParams.toString()}`,
-      })
-    );
+    const queryString = searchParams.toString();
+    dispatch(fetchProperties({ queryString }));
   };
 
   // run once
@@ -34,6 +38,9 @@ function Home() {
   const dispatch = useDispatch();
 
   const [searchParams] = useSearchParams();
+
+  const [Longitude, setLongitude] = useState(null);
+  const [Latitude, setLatitude] = useState(null);
 
   // console.log(searchParams.toString());
 

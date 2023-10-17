@@ -45,17 +45,16 @@ const Published = ({ id, images = [], onDialogueOpen }) => {
 
       {/* Action Btns */}
       <div className='account__properties__property__action p-10 text-white'>
-        <button
-          className='block p-2 bg-green-500/90 mb-3 w-full rounded-sm'
-          data-property-id={id}
+        <Link
+          className='block p-2 bg-green-500/90 mb-3 w-full rounded-sm text-center'
+          to={`/${id}/update`}
         >
-          <Link to={`/${id}/update`}>
-            <span className='mr-1'>
-              <EditSharp />
-            </span>
-            Modifiez
-          </Link>
-        </button>
+          <span className='mr-1'>
+            <EditSharp />
+          </span>
+          Modifiez
+        </Link>
+
         <button
           className='block p-2 bg-red-400/90 w-full rounded-sm'
           data-property-id={id}
@@ -85,14 +84,13 @@ const UnPublished = ({ id, images = [], onDialogueOpen }) => {
       <div className='relative'>
         {/* Action Btns */}
         <div className='absolute top-3 right-3 text-white'>
-          <button
-            className='btn-edit p-2 mr-2 bg-green-500/50 rounded-md'
-            data-property-id={id}
+          <Link
+            to={`/${id}/update`}
+            className='btn-edit p-2 mr-2 bg-green-500/50 rounded-md text-center'
           >
-            <Link to={`/${id}/update`}>
-              <EditSharp fontSize='small' />
-            </Link>
-          </button>
+            <EditSharp fontSize='small' />
+          </Link>
+
           <button
             className='btn-delete p-2 bg-red-400/40 rounded-md'
             data-property-id={id}
