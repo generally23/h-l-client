@@ -27,7 +27,7 @@ const Published = ({ id, images = [], onDialogueOpen }) => {
     might be undefined 
     consider replacing it 
   */
-  const thumbnail = images[0]?.src;
+  const thumbnail = images[0];
 
   return (
     <div className='bg-gray-200'>
@@ -36,7 +36,8 @@ const Published = ({ id, images = [], onDialogueOpen }) => {
         {/* Thumbnail */}
         <figure className='thumbnail'>
           <img
-            src={thumbnail}
+            src={thumbnail?.src}
+            srcSet={thumbnail?.srcset}
             alt='Property Image'
             className='thumbnail__img block select-none object-cover'
           />

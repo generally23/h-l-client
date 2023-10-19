@@ -4,7 +4,7 @@ import { PropertyPreview } from '../../../Property';
 
 const Preview = ({ currentStep, onPrevStep, inputs }) => {
   const { type } = inputs;
-  const [step] = useState(type === 'land' ? 5 : 6);
+  const step = type === 'land' ? 5 : 6;
 
   // console.log(property);
 

@@ -19,8 +19,8 @@ function Properties() {
 
   return (
     <>
-      {/* {propertiesList.length ? <ControlForm></ControlForm> : null} */}
-      <ControlForm></ControlForm>
+      {propertiesList.length ? <ControlForm></ControlForm> : null}
+      {/* <ControlForm></ControlForm> */}
       <Grid container spacing={4} sx={{ flexGrow: 1 }}>
         {loading ? <PropertySkeleton /> : propertiesJsx}
       </Grid>

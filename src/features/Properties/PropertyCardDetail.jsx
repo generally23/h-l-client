@@ -42,7 +42,6 @@ const HouseType = ({
   fenced,
   hasPool,
 }) => {
-  console.log(yearBuilt);
   return (
     <>
       {/* Carousel */}
@@ -175,11 +174,14 @@ const HouseType = ({
       <ul className='property__detail__primary p-5 bg-neutral-200'>
         {/* House Type */}
         <li className='property__details__detail flex'>
-          <span className='property__details__detail__icon inline-block mr-2'>
-            <House fontSize='small'></House>
-          </span>
-          <div>
+          <div className=''>
+            <span className='property__details__detail__icon inline-block mr-2'>
+              <House fontSize='small'></House>
+            </span>
             <span className='property__details__detail__key mr-1.5'>Type:</span>
+          </div>
+
+          <div>
             <span className='property__details__detail__value'>Maison</span>
           </div>
         </li>
@@ -189,13 +191,16 @@ const HouseType = ({
 
         {/* Built Year */}
         <li className='property__details__detail flex'>
-          <span className='property__details__detail__icon inline-block mr-2'>
-            <Construction fontSize='small'></Construction>
-          </span>
-          <div>
+          <div className=''>
+            <span className='property__details__detail__icon inline-block mr-2'>
+              <Construction fontSize='small'></Construction>
+            </span>
             <span className='property__details__detail__key mr-1.5'>
               Construit en:
             </span>
+          </div>
+
+          <div>
             <span className='property__details__detail__value'>
               {yearBuilt.$y || yearBuilt}
             </span>
@@ -212,11 +217,14 @@ const LandType = ({ area, fenced }) => {
       <ul className='property__detail__primary p-5 bg-neutral-200'>
         {/* Property Type */}
         <li className='property__details__detail flex'>
-          <span className='property__details__detail__icon inline-block mr-2'>
-            <Landscape fontSize='small'></Landscape>
-          </span>
-          <div>
+          <div className=''>
+            <span className='property__details__detail__icon inline-block mr-2'>
+              <Landscape fontSize='small'></Landscape>
+            </span>
             <span className='property__details__detail__key mr-1.5'>Type:</span>
+          </div>
+
+          <div>
             <span className='property__details__detail__value'>Terrain</span>
           </div>
         </li>
@@ -225,13 +233,16 @@ const LandType = ({ area, fenced }) => {
 
         {/* Cloture */}
         <li className='property__details__detail flex'>
-          <span className='property__details__detail__icon inline-block mr-2 invisible'>
-            <Landscape fontSize='small'></Landscape>
-          </span>
-          <div>
+          <div className=''>
+            <span className='property__details__detail__icon inline-block mr-2 invisible'>
+              <Landscape fontSize='small'></Landscape>
+            </span>
             <span className='property__details__detail__key mr-1.5'>
               Cloture:
             </span>
+          </div>
+
+          <div>
             <span className='property__details__detail__value'>
               {fenced ? (
                 <span className=''>
@@ -255,11 +266,14 @@ const CommonDetails = ({ area }) => {
     <>
       {/* Status */}
       <li className='property__details__detail flex'>
-        <span className='property__details__detail__icon inline-block mr-2'>
-          <Autorenew fontSize='small'></Autorenew>
-        </span>
-        <div>
+        <div className=''>
+          <span className='property__details__detail__icon inline-block mr-2'>
+            <Autorenew fontSize='small'></Autorenew>
+          </span>
           <span className='property__details__detail__key mr-1.5'>Status:</span>
+        </div>
+
+        <div>
           <span className='property__details__detail__value'>Disponible</span>
         </div>
       </li>
@@ -279,24 +293,30 @@ const CommonDetails = ({ area }) => {
 
       {/* Address */}
       <li className='property__details__detail flex'>
-        <span className='property__details__detail__icon inline-block mr-2'>
-          <Place fontSize='small'></Place>
-        </span>
-        <div>
+        <div className=''>
+          <span className='property__details__detail__icon inline-block mr-2'>
+            <Place fontSize='small'></Place>
+          </span>
           <span className='property__details__detail__key mr-1.5'>Lieu:</span>
+        </div>
+
+        <div>
           <span className='property__details__detail__value'>Bambeto</span>
         </div>
       </li>
 
       {/* Area */}
       <li className='property__details__detail flex'>
-        <span className='property__details__detail__icon inline-block mr-2'>
-          <SquareFoot fontSize='small'></SquareFoot>
-        </span>
-        <div>
+        <div className=''>
+          <span className='property__details__detail__icon inline-block mr-2'>
+            <SquareFoot fontSize='small'></SquareFoot>
+          </span>
           <span className='property__details__detail__key mr-1.5'>
             Superficie:
           </span>
+        </div>
+
+        <div>
           <span className='property__details__detail__value'>
             {area}
             <strong>
@@ -308,13 +328,16 @@ const CommonDetails = ({ area }) => {
 
       {/* On Platform since */}
       <li className='property__details__detail flex'>
-        <span className='property__details__detail__icon inline-block mr-2'>
-          <Storefront fontSize='small'></Storefront>
-        </span>
-        <div>
+        <div className=''>
+          <span className='property__details__detail__icon inline-block mr-2'>
+            <Storefront fontSize='small'></Storefront>
+          </span>
           <span className='property__details__detail__key mr-1.5'>
             Sur Platforme:
           </span>
+        </div>
+
+        <div>
           <span className='property__details__detail__value'>7 jours</span>
         </div>
       </li>

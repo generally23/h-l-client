@@ -210,7 +210,7 @@ function Images({
   };
 
   // State
-  const [step] = useState(type === 'land' ? 4 : 5);
+  const step = type === 'land' ? 4 : 5;
 
   // console.log(uploadedFiles);
 

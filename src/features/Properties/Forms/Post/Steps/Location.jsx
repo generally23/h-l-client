@@ -14,7 +14,8 @@ function Location({
   setAddress,
 }) {
   // if type of property is land this step is 3
-  const [step] = useState(type === 'land' ? 3 : 4);
+  // const [step] = useState(type === 'land' ? 3 : 4);
+  const step = type === 'land' ? 3 : 4;
 
   const [addressError, setAddressError] = useState('');
 
@@ -35,6 +36,10 @@ function Location({
 
     validateFields(addressField) && setCurrentStep(currentStep + 1);
   };
+
+  console.log('type: ', type);
+  console.log('step: ', step);
+  console.log('current step: ', currentStep);
 
   return (
     <div

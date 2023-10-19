@@ -78,6 +78,7 @@ function Property({ property }) {
           <img
             className='block w-full'
             src={`${property.images[0].src}`}
+            srcSet={`${property.images[0].srcset}`}
             alt=''
           />
           <div

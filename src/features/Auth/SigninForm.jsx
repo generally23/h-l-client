@@ -85,7 +85,7 @@ const SigninForm = ({ setSuccessMessage, setErrorMessage }) => {
       // redirect user after 2 seconds
       setTimeout(() => {
         // redirect
-        redirect(-1);
+        redirect('/');
       }, 3000);
     }
 

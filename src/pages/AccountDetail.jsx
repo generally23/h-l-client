@@ -2,14 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import MyProperties from '../features/Properties/MyProperties';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  fetchMyProperties,
-  selectMyProperties,
-} from '../features/Properties/myPropertiesSlice';
+import { fetchMyProperties } from '../features/Properties/myPropertiesSlice';
 import { CircularProgress } from '@mui/material';
 import ErrorAlert from '../customComponents/ErrorAlert';
-import { fetchData, manageAccountAuth } from '../utils/crud';
-import { accountsURL } from '../constants';
+import { manageAccountAuth } from '../utils/crud';
 import { useAccount } from '../hooks/useAccount';
 
 function Account({ firstname, lastname, email, avatarUrls, verified }) {
@@ -20,12 +16,10 @@ function Account({ firstname, lastname, email, avatarUrls, verified }) {
 
   const dispatch = useDispatch();
 
-  const { loading, properties, error } = useSelector(selectMyProperties);
-
   const {
     loading: sending,
-    account,
-    error: sendingError,
+    account: verficationCode,
+    error,
     setLoading,
     setAccount,
     setError,
@@ -39,20 +33,18 @@ function Account({ firstname, lastname, email, avatarUrls, verified }) {
     manageAccountAuth({ path, method, setLoading, setAccount, setError });
   };
 
-  // const {
-  //   loading: verifying,
-  //   error: accountError,
-  //   account,
-  // } = useSelector(state => state.account);
+  useEffect(() => {
+    console.log('Code: ', verficationCode);
+    console.log('Error: ', error);
+  }, [verficationCode, error]);
 
-  // console.log(loading, error, properties);
-
+  // this effect fetches my properties and runs once
   useEffect(() => {
     dispatch(fetchMyProperties());
   }, []);
 
   return (
-    <div className='account m-5 sm:m-10 md:m-20 lg:m-32'>
+    <div className='account'>
       <div className='account__info mb-5 bg-white py-5 px-10 sm:inline-block'>
         <div className='flex mb-2'>
           <div className='account__info__avatar grow-0 shrink-0 mr-5'>
@@ -91,7 +83,7 @@ function Account({ firstname, lastname, email, avatarUrls, verified }) {
               className='inline-flex w-auto px-5 bg-green-400 py-2 items-center rounded-sm'
             >
               <span className='mr-2'>Me verifier</span>
-              {/* {verifying && <CircularProgress size={25} />} */}
+              {sending && <CircularProgress size={25} />}
             </button>
           )}
         </div>
@@ -140,6 +132,8 @@ function AccountDetail() {
 
   const [errMsg, setErrMsg] = useState('');
 
+  // const [verficationS]
+
   useEffect(() => {
     if (!account && error) {
       setErrMsg(error.message);
@@ -148,7 +142,7 @@ function AccountDetail() {
   }, [account, error]);
 
   return (
-    <main className='main'>
+    <main className='main p-5 sm:p-10 md:p-20 lg:p-32'>
       {errMsg && <ErrorAlert message={errMsg} />}
       {account && <Account {...account} />}
     </main>

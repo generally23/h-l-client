@@ -91,7 +91,6 @@ function Area({
   };
 
   const [step] = useState(2);
-  console.log('Year Built', yearBuilt);
 
   // Errors
   const [areaError, setAreaError] = useState('');

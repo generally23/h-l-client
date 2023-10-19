@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import RangeSlider from '../../../../customComponents/Range.jsx';
 import { Close, FilterAlt } from '@mui/icons-material';
 import { useSearchParams } from 'react-router-dom';
-import { InputAdornment, TextField } from '@mui/material';
+import { InputAdornment, Slider, TextField } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectFilters, updateFilters } from '../../../Filters/index.js';
 import { inputNames } from '../../../../constants.js';
@@ -56,6 +56,18 @@ const FilterType = ({ onSingleValueChange }) => {
 
 const FilterPrice = () => {
   const {} = useSelector(selectFilters);
+  const minPrice = 10_000_000; // 10 million
+  const maxPrice = 10_000_000_000; // 10 billion
+  const step = 5_000_000; // Step by 5 million
+
+  const valueLabelFormat = value => {
+    const priceLength = value.toString().length;
+    // values < 10 numbers are million
+    if (priceLength < 10) return value / 1_000_000 + 'M';
+    // values > 10 numbers are billion
+    return (value / 1_000_000_000).toFixed(1) + 'Mds';
+  };
+
   return (
     <li className='filter__list__item'>
       {/* Filter Name */}
@@ -65,42 +77,16 @@ const FilterPrice = () => {
       <div className='filter__value'>
         <div className='filter__value__textfields flex justify-between'>
           {/* Min Price */}
-          <div className='mr-5'>
-            <TextField
-              size='small'
-              name='price[lte]'
-              value={5000}
-              label='Minimum'
-              // InputProps={{ inputProps: { min: 1 } }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <strong>FG</strong>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </div>
+
           {/* Max Price */}
-          <div className=''>
-            <TextField
-              size='small'
-              name='price[gte]'
-              value={10000}
-              label='Maximum'
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <strong>FG</strong>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </div>
         </div>
         {/* Slider */}
-        <div className='slider'>
-          <RangeSlider />
+        <div className='slider px-3'>
+          <RangeSlider
+            minValue={minPrice}
+            maxValue={maxPrice}
+            {...{ valueLabelFormat, step }}
+          />
         </div>
       </div>
     </li>
@@ -233,7 +219,19 @@ const FilterBathroom = ({ onSingleValueChange }) => {
 };
 
 const FilterArea = () => {
+  const valueLabelFormat = value => {
+    const length = value.toString().length;
+    // values < 5 are metre square
+    if (length < 5) return `${value}m²`;
+    // values > 5 are in hectares
+    return `${value / 10_000}hect`;
+  };
+
   const {} = useSelector(state => state.filters);
+
+  const minArea = 250;
+  const maxArea = 10_000;
+  const step = 50;
 
   return (
     <li className='filter__list__item'>
@@ -244,48 +242,17 @@ const FilterArea = () => {
       <div className='filter__value'>
         <div className='filter__value__textfields flex justify-between'>
           {/* Min Area */}
-          <div className='mr-5'>
-            <TextField
-              size='small'
-              name='area[lte]'
-              value={500}
-              label='Minimum'
-              // InputProps={{ inputProps: { min: 1 } }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <strong>
-                      m<sup>2</sup>
-                    </strong>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </div>
 
           {/* Max Area */}
-          <div className=''>
-            <TextField
-              size='small'
-              name='area[gte]'
-              value={10000}
-              label='Maximum'
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <strong>
-                      m<sup>2</sup>
-                    </strong>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </div>
         </div>
 
         {/* Slider */}
-        <div className='slider'>
-          <RangeSlider />
+        <div className='slider px-5'>
+          <RangeSlider
+            minValue={minArea}
+            maxValue={maxArea}
+            {...{ valueLabelFormat, step }}
+          />
         </div>
       </div>
     </li>
@@ -293,7 +260,23 @@ const FilterArea = () => {
 };
 
 const FilterYearBuilt = () => {
-  return <div className='filter'></div>;
+  const minYear = 1900;
+  const maxYear = new Date().getFullYear();
+
+  return (
+    <li className='filter__list__item'>
+      {/* Filter Name */}
+      <div className='filter__name'>Année Construit</div>
+
+      {/* Filter Values */}
+      <div className='filter__value'>
+        {/* Slider */}
+        <div className='slider px-5'>
+          <RangeSlider minValue={minYear} maxValue={maxYear} />
+        </div>
+      </div>
+    </li>
+  );
 };
 
 const FilterExtraAttributes = ({ onCheck }) => {
@@ -419,9 +402,8 @@ const CtaButtons = ({ resetFilters, onSearch }) => {
 
 function Filter({ resetFilters }) {
   const toggleFilter = e => {
-    setOpen(!open);
-
     toggleBodyOverflow();
+    setOpen(!open);
   };
 
   const onSingleValueChange = state => e => {
@@ -563,6 +545,9 @@ function Filter({ resetFilters }) {
 
             {/* Area */}
             <FilterArea />
+
+            {/* Year Built */}
+            <FilterYearBuilt />
 
             {/* Other Attributes */}
 
